@@ -29,10 +29,10 @@ public class TaskController {
     private UserRepository userRepository;
 
     @GetMapping("/tasks")
-    public String home(Model model, Principal principal) {
+    public String home(@AuthenticationPrincipal User user, Model model, Principal principal) {
         Long id = userRepository.findByUsername(principal.getName()).getId();
         model.addAttribute("id", "Твой id: " + id);
-        Iterable<Tasks> tasks = taskRepository.findAll();
+        Iterable<Tasks> tasks = taskRepository.findByUser(user);
         model.addAttribute("tasks", tasks);
         model.addAttribute("username", "Привет, " + principal.getName() + "!");
         return "tasks";

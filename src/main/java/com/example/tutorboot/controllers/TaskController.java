@@ -32,7 +32,7 @@ public class TaskController {
     public String home(Model model, Principal principal) {
         Long id = userRepository.findByUsername(principal.getName()).getId();
         model.addAttribute("id", "Твой id: " + id);
-        Iterable<Tasks> tasks = taskRepository.findAllByUserId(id);
+        Iterable<Tasks> tasks = taskRepository.findAll();
         model.addAttribute("tasks", tasks);
         model.addAttribute("username", "Привет, " + principal.getName() + "!");
         return "tasks";

@@ -33,6 +33,7 @@
             <td th:text="${el.skill_name}"/>
             <td th:text="${el.difficulty}"/>
             <td th:text="${el.UserId}"/>
+            <td><a class="btn btn-primary" th:href="@{taskSkillUp/{id}(id=${el.id})}" role="button">Complete</a></td>
             <td><a class="btn btn-primary" th:href="@{taskEdit/{id}(id=${el.id})}" role="button">Edit</a></td>
             <td><a class="btn btn-primary" th:href="@{taskDelete/{id}(id=${el.id})}" role="button">Delete</a></td>
         </tr>

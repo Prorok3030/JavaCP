@@ -1,6 +1,5 @@
 package com.example.tutorboot.models;
 
-import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,11 +16,13 @@ public class User implements UserDetails {
     private String username;
     private String password;
     private boolean active;
-    private Integer strength;
+    private Integer strength = 0;
     private Integer intelligence = 0;
     private Integer health = 0;
     private Integer creativity = 0;
     private Integer communication = 0;
+    private Integer level = 0;
+    private Integer experience = 0;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
@@ -99,6 +100,23 @@ public class User implements UserDetails {
     public void setCommunication(Integer communication) {
         this.communication = communication;
     }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
+
+    public Integer getExperience() {
+        return experience;
+    }
+
+    public void setExperience(Integer experience) {
+        this.experience = experience;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();

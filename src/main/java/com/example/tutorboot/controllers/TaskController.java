@@ -4,6 +4,7 @@ import com.example.tutorboot.models.Tasks;
 import com.example.tutorboot.models.User;
 import com.example.tutorboot.repo.TaskRepository;
 import com.example.tutorboot.repo.UserRepository;
+import com.example.tutorboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -28,13 +29,17 @@ public class TaskController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/tasks")
     public String home(@AuthenticationPrincipal User user, Model model, Principal principal) {
         Long id = userRepository.findByUsername(principal.getName()).getId();
-        model.addAttribute("id", "Твой id: " + id);
+        model.addAttribute("id", "Твой id: " + id); //TODO Возможно оставить только переменную, а строки в кавычках перенести в html
         Iterable<Tasks> tasks = taskRepository.findByUser(user);
         model.addAttribute("tasks", tasks);
         model.addAttribute("username", "Привет, " + principal.getName() + "!");
+        model.addAttribute("user", user);
         return "tasks";
     }
 
@@ -98,6 +103,7 @@ public class TaskController {
             case "communication": user.setCommunication(user.getCommunication() + difPoint);
                 break;
         }
+        userService.UserExpUp(user,difPoint);
         userRepository.save(user);
         taskRepository.deleteById(id);
         return "redirect:/tasks";

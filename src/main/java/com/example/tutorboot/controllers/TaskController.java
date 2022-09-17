@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -32,6 +34,24 @@ public class TaskController {
     @Autowired
     private UserService userService;
 
+    private static List<String> difficulties;
+    static {
+        difficulties = new ArrayList<>();
+        difficulties.add("low");
+        difficulties.add("medium");
+        difficulties.add("high");
+    }
+
+    private static List<String> skills;
+    static {
+        skills = new ArrayList<>();
+        skills.add("strength");
+        skills.add("intelligence");
+        skills.add("health");
+        skills.add("creativity");
+        skills.add("communication");
+    }
+
     @GetMapping("/tasks")
     public String home(@AuthenticationPrincipal User user, Model model, Principal principal) {
         Long id = userRepository.findByUsername(principal.getName()).getId();
@@ -45,6 +65,8 @@ public class TaskController {
 
     @GetMapping("/taskAdd")
     public String taskAdd(Model model){
+        model.addAttribute("difficulties", difficulties);
+        model.addAttribute("skills", skills);
         return "taskAdd";
     }
 
@@ -60,13 +82,16 @@ public class TaskController {
     public String taskEdit(@PathVariable("id") long id, Model model){
         Optional<Tasks> tasks = taskRepository.findById(id); //TODO Optional (в методе taskSkillUp есть альтернативное решение)
         model.addAttribute("tasks", tasks);
+        model.addAttribute("difficulties", difficulties);
+        model.addAttribute("skills", skills);
         return "taskEdit";
     }
 
     @PostMapping("/taskEdit/{id}")
-    public String taskPostEdit(Tasks tasks){
+    public String taskPostEdit(@AuthenticationPrincipal User user, Tasks tasks){
+        tasks.setUser(user); //TODO Исправить, чтобы пользователь не терялся после передачи формы Edit
         taskRepository.save(tasks);
-        return "taskEdit";
+        return "redirect:/tasks";
     }
 
     @GetMapping("/taskDelete/{id}")

@@ -28,5 +28,6 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    //ThePoint (Добавить TasksService, для создание метода работы с очками опыта пользователя)
+    //ThePoint (Попробовать поработать над дизайном (progress bar); Сделать фиксированный выбор сложности и навыков)
+
 }

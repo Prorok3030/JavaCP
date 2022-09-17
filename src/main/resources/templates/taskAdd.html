@@ -12,8 +12,16 @@
 <h1>Add task</h1>
 <form method="post"> <!--По умолчанию отправляет на текущую страницу-->
     <input type="text" name="name" placeholder="Input name" class="form-control"><br>
-    <input type="text" name="skill" placeholder="Input skill" class="form-control"><br>
-    <input type="text" name="difficulty" placeholder="Input difficulty" class="form-control"><br>
+    <td>Skill</td>
+    <select id="skill" name ="skill">
+        <option th:each="skills : ${skills}"
+                th:text="${skills}">
+    </select><br>
+    <td>Difficulty</td>
+    <select id="difficulty" name ="difficulty">
+        <option th:each="difficulties : ${difficulties}"
+            th:text="${difficulties}">
+    </select><br>
     <button type="submit" class="btn btn-success">Enter</button>
 </form> <br>
     <a class="btn btn-primary" href="/tasks" role="button">Main page</a>

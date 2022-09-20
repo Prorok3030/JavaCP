@@ -13,7 +13,6 @@
     </form>
 </div>
 <h3 class="fw-bold" th:text="${username}"></h3>
-<h4 class="fw-bold" th:text="${id}"></h4>
 <p class="lead mb-4">Вот твой список задач. Наслаждайся!</p>
 <h3 class="fw-bold" th:text="${user.level} + ' lvl'"></h3>
 <h4 class="fw-bold" th:text="${user.experience} + '/50 exp'"></h4>
@@ -33,7 +32,7 @@
         <tr>
             <td th:text="${el.name}"/>
             <td th:text="${el.skill_name}"/>
-            <td th:text="${el.difficulty}"/>
+            <td th:text="${el.DifficultyName}"/>
             <td th:text="${el.UserId}"/>
             <td><a class="btn btn-primary" th:href="@{taskSkillUp/{id}(id=${el.id})}" role="button">Complete</a></td>
             <td><a class="btn btn-primary" th:href="@{taskEdit/{id}(id=${el.id})}" role="button">Edit</a></td>

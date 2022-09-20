@@ -12,7 +12,10 @@ public class Tasks {
     private Long id;
     private String name;
     private String skill_name;
-    private String difficulty;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "difficulty_id")
+    private Difficulty difficulty;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -23,11 +26,15 @@ public class Tasks {
              return user.getId();
     }
 
+    public String getDifficultyName() { //TODO Spring Boot magic
+        return difficulty.getName();
+    }
+
     public Tasks() {
     }
 
 
-    public Tasks(String name, String skill_name, String difficulty, User user) {
+    public Tasks(String name, String skill_name, Difficulty difficulty, User user) {
         this.name = name;
         this.skill_name = skill_name;
         this.difficulty = difficulty;
@@ -58,11 +65,11 @@ public class Tasks {
         this.skill_name = skill_name;
     }
 
-    public String getDifficulty() {
+    public Difficulty getDifficulty() {
         return difficulty;
     }
 
-    public void setDifficulty(String difficulty) {
+    public void setDifficulty(Difficulty difficulty) {
         this.difficulty = difficulty;
     }
 

@@ -20,6 +20,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                     .antMatchers("/", "/registration", "/about").permitAll()
+                    .antMatchers("/tasks/**").authenticated()
                     //.antMatchers("/taskEdit/**").hasRole(Role.USER.name()) (возможно работает только со способом через Bean (ниже)
                     .anyRequest().authenticated()
                 .and()

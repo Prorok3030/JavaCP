@@ -1,7 +1,9 @@
 package com.example.tutorboot.controllers;
 
+import com.example.tutorboot.models.Difficulty;
 import com.example.tutorboot.models.Tasks;
 import com.example.tutorboot.models.User;
+import com.example.tutorboot.repo.DifficultyRepository;
 import com.example.tutorboot.repo.TaskRepository;
 import com.example.tutorboot.repo.UserRepository;
 import com.example.tutorboot.service.UserService;
@@ -32,15 +34,18 @@ public class TaskController {
     private UserRepository userRepository;
 
     @Autowired
+    private DifficultyRepository difficultyRepository;
+
+    @Autowired
     private UserService userService;
 
-    private static List<String> difficulties;
-    static {
-        difficulties = new ArrayList<>();
-        difficulties.add("low");
-        difficulties.add("medium");
-        difficulties.add("high");
-    }
+//    private static List<String> difficulties;
+//    static {
+//        difficulties = new ArrayList<>();
+//        difficulties.add("low");
+//        difficulties.add("medium");
+//        difficulties.add("high");
+//    }
 
     private static List<String> skills;
     static {
@@ -54,8 +59,8 @@ public class TaskController {
 
     @GetMapping("/tasks")
     public String home(@AuthenticationPrincipal User user, Model model, Principal principal) {
-        Long id = userRepository.findByUsername(principal.getName()).getId();
-        model.addAttribute("id", "Твой id: " + id); //TODO Возможно оставить только переменную, а строки в кавычках перенести в html
+//        Long id = userRepository.findByUsername(principal.getName()).getId();
+//        model.addAttribute("id", "Твой id: " + id); //TODO Возможно оставить только переменную, а строки в кавычках перенести в html
         Iterable<Tasks> tasks = taskRepository.findByUser(user);
         model.addAttribute("tasks", tasks);
         model.addAttribute("username", "Привет, " + principal.getName() + "!");
@@ -65,7 +70,8 @@ public class TaskController {
 
     @GetMapping("/taskAdd")
     public String taskAdd(Model model){
-        model.addAttribute("difficulties", difficulties);
+        Iterable<Difficulty> difficulty = difficultyRepository.findAll();
+        model.addAttribute("difficulties", difficulty);
         model.addAttribute("skills", skills);
         return "taskAdd";
     }
@@ -73,7 +79,8 @@ public class TaskController {
     @PostMapping("/taskAdd")
     public String taskPostAdd(@AuthenticationPrincipal User user,
                               @RequestParam String name, @RequestParam String skill, @RequestParam String difficulty, Model model){
-        Tasks tasks = new Tasks(name, skill, difficulty, user);
+        Difficulty diff = difficultyRepository.findByName(difficulty);
+        Tasks tasks = new Tasks(name, skill, diff, user);
         taskRepository.save(tasks);
         return "redirect:/taskAdd";
     }
@@ -81,8 +88,10 @@ public class TaskController {
     @GetMapping("/taskEdit/{id}")
     public String taskEdit(@PathVariable("id") long id, Model model){
         Optional<Tasks> tasks = taskRepository.findById(id); //TODO Optional (в методе taskSkillUp есть альтернативное решение)
+        Iterable<Difficulty> difficulty = difficultyRepository.findAll();
         model.addAttribute("tasks", tasks);
-        model.addAttribute("difficulties", difficulties);
+        model.addAttribute("difficulties", difficulty);
+        //model.addAttribute("difficulties", difficulties);
         model.addAttribute("skills", skills);
         return "taskEdit";
     }
@@ -103,18 +112,8 @@ public class TaskController {
     @GetMapping("/taskSkillUp/{id}")
     public String taskSkillUp(@AuthenticationPrincipal User user ,@PathVariable("id") long id, Model model){
         Tasks tasks = taskRepository.findById(id).orElse(null);
-        Integer difPoint = 0;
-        switch (tasks.getDifficulty()) {
-            case "low":
-                difPoint = 5;
-                break;
-            case "medium":
-                difPoint = 10;
-                break;
-            case "high":
-                difPoint = 20;
-                break;
-        }
+        Difficulty difficulty = tasks.getDifficulty();
+        Integer difPoint = difficulty.getPoints();
 
         switch (tasks.getSkill_name()) {
             case "strength": user.setStrength(user.getStrength() + difPoint);

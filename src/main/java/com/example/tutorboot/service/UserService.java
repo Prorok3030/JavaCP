@@ -28,6 +28,6 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    //ThePoint (Попробовать поработать над дизайном (progress bar); Сделать фиксированный выбор сложности и навыков)
+    //ThePoint (Попробовать поработать над дизайном (progress bar) или сделать профиль;
 
 }

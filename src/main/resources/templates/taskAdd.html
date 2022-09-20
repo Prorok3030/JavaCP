@@ -20,7 +20,7 @@
     <td>Difficulty</td>
     <select id="difficulty" name ="difficulty">
         <option th:each="difficulties : ${difficulties}"
-            th:text="${difficulties}">
+            th:text="${difficulties.name}">
     </select><br>
     <button type="submit" class="btn btn-success">Enter</button>
 </form> <br>

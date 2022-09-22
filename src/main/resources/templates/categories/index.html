@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All categories</title>
+</head>
+<body>
+<div th:each="category : ${categories}">
+    <a th:href="@{/categories/{id}(id=${category.getId()})}" th:text="${category.getName()}">task</a>
+</div>
+
+<br/>
+<hr/>
+<a href="/categories/new">Create new categories</a>
+
+</body>
+</html>

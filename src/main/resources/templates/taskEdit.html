@@ -21,6 +21,11 @@
             <option th:each="difficulties : ${difficulties}" th:value="${difficulties.id}"
                     th:text="${difficulties.name}">
         </select><br>
+        <td>Category</td>
+        <select th:field="*{category}">
+            <option th:each="category : ${categories}" th:value="${category.id}"
+                    th:text="${category.name}">
+        </select><br>
         <button type="submit" class="btn btn-success">Update</button>
     </form>
 </div>

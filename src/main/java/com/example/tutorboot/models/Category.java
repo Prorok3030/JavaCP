@@ -1,22 +1,24 @@
 package com.example.tutorboot.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.sun.istack.NotNull;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @NotNull
     private String name;
+    @OneToMany(mappedBy = "category")
+    private List<Tasks> tasks;
 
     public Category(){
     }
 
-    public Category(Long id, String name) {
-        this.id = id;
+    public Category(String name) {
         this.name = name;
     }
 
@@ -34,6 +36,14 @@ public class Category {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Tasks> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Tasks> tasks) {
+        this.tasks = tasks;
     }
 }
 

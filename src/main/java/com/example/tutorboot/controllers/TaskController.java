@@ -1,11 +1,14 @@
 package com.example.tutorboot.controllers;
 
+import com.example.tutorboot.models.Category;
 import com.example.tutorboot.models.Difficulty;
 import com.example.tutorboot.models.Tasks;
 import com.example.tutorboot.models.User;
 import com.example.tutorboot.repo.DifficultyRepository;
 import com.example.tutorboot.repo.TaskRepository;
 import com.example.tutorboot.repo.UserRepository;
+import com.example.tutorboot.service.CategoriesService;
+import com.example.tutorboot.service.TasksService;
 import com.example.tutorboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,8 +29,10 @@ public class TaskController {
 
     private final TaskRepository taskRepository;
 
-    public TaskController(TaskRepository taskRepository) {
+    public TaskController(TaskRepository taskRepository, TasksService tasksService, CategoriesService categoriesService) {
         this.taskRepository = taskRepository;
+        this.tasksService = tasksService;
+        this.categoriesService = categoriesService;
     }
 
     @Autowired
@@ -38,6 +43,10 @@ public class TaskController {
 
     @Autowired
     private UserService userService;
+
+    private final TasksService tasksService;
+
+    private final CategoriesService categoriesService;
 
 //    private static List<String> difficulties;
 //    static {
@@ -57,6 +66,7 @@ public class TaskController {
         skills.add("communication");
     }
 
+
     @GetMapping("/tasks")
     public String home(@AuthenticationPrincipal User user, Model model, Principal principal) {
 //        Long id = userRepository.findByUsername(principal.getName()).getId();
@@ -73,25 +83,33 @@ public class TaskController {
         Iterable<Difficulty> difficulty = difficultyRepository.findAll();
         model.addAttribute("difficulties", difficulty);
         model.addAttribute("skills", skills);
+        model.addAttribute("categories", categoriesService.findAll());
         return "taskAdd";
     }
 
     @PostMapping("/taskAdd")
     public String taskPostAdd(@AuthenticationPrincipal User user,
-                              @RequestParam String name, @RequestParam String skill, @RequestParam String difficulty, Model model){
+                              @RequestParam String name, @RequestParam String skill, @RequestParam String difficulty, @RequestParam Long category_id, Model model){
         Difficulty diff = difficultyRepository.findByName(difficulty);
-        Tasks tasks = new Tasks(name, skill, diff, user);
+        Category cat = categoriesService.findOne(category_id);
+        Tasks tasks = new Tasks(name, skill, diff, user, cat);
         taskRepository.save(tasks);
-        return "redirect:/taskAdd";
+        return "redirect:/tasks";
     }
 
     @GetMapping("/taskEdit/{id}")
     public String taskEdit(@PathVariable("id") long id, Model model){
         Optional<Tasks> tasks = taskRepository.findById(id); //TODO Optional (в методе taskSkillUp есть альтернативное решение)
         Iterable<Difficulty> difficulty = difficultyRepository.findAll();
+        Tasks task1 = tasksService.findOne(id);
+        Category category1 = task1.getCategory();
         model.addAttribute("tasks", tasks);
         model.addAttribute("difficulties", difficulty);
-        //model.addAttribute("difficulties", difficulties);
+        //сделать метод, который достает id категории по id задачи,
+        //чтобы сохранилось старое значение категории
+        //и чтобы было красиво!!
+        model.addAttribute("categories", categoriesService.findAll());
+        model.addAttribute("category", category1.getId());
         model.addAttribute("skills", skills);
         return "taskEdit";
     }

@@ -22,6 +22,11 @@ public class Tasks {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    private Category category;
+
+
     public Long getUserId() { //TODO Spring Boot magic
              return user.getId();
     }
@@ -34,11 +39,12 @@ public class Tasks {
     }
 
 
-    public Tasks(String name, String skill_name, Difficulty difficulty, User user) {
+    public Tasks(String name, String skill_name, Difficulty difficulty, User user, Category category) {
         this.name = name;
         this.skill_name = skill_name;
         this.difficulty = difficulty;
         this.user = user;
+        this.category = category;
     }
 
     public Long getId() {
@@ -79,5 +85,13 @@ public class Tasks {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }

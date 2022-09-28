@@ -11,6 +11,8 @@ import com.example.tutorboot.service.CategoriesService;
 import com.example.tutorboot.service.TasksService;
 import com.example.tutorboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +25,8 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 public class TaskController {
@@ -68,11 +72,27 @@ public class TaskController {
 
 
     @GetMapping("/tasks")
-    public String home(@AuthenticationPrincipal User user, Model model, Principal principal) {
+    public String home(@AuthenticationPrincipal User user, Model model, Principal principal,
+                       @RequestParam("page") Optional<Integer> page,
+                       @RequestParam("size") Optional<Integer> size) {
+        List<Tasks> tasks = taskRepository.findByUser(user);
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(5);
+        Page<Tasks> tasksPage = tasksService.findPaginated(PageRequest.of(currentPage -1, pageSize), tasks);
+        model.addAttribute("tasksPage", tasksPage);
+        int totalPages = tasksPage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+            model.addAttribute("currentPage", currentPage);
+            model.addAttribute("totalPages", totalPages);
+        }
+
 //        Long id = userRepository.findByUsername(principal.getName()).getId();
 //        model.addAttribute("id", "Твой id: " + id); //TODO Возможно оставить только переменную, а строки в кавычках перенести в html
-        Iterable<Tasks> tasks = taskRepository.findByUser(user);
-        model.addAttribute("tasks", tasks);
+        //model.addAttribute("tasks", tasks);
         model.addAttribute("username", "Привет, " + principal.getName() + "!");
         model.addAttribute("user", user);
         return "tasks";
@@ -94,7 +114,7 @@ public class TaskController {
         Category cat = categoriesService.findOne(category_id);
         Tasks tasks = new Tasks(name, skill, diff, user, cat);
         taskRepository.save(tasks);
-        return "redirect:/tasks";
+        return "redirect:/taskAdd";
     }
 
     @GetMapping("/taskEdit/{id}")

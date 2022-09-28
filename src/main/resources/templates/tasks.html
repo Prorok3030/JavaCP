@@ -30,7 +30,7 @@
             <th scope="col">User_id</th>
         </tr>
         </thead>
-        <tbody th:each="el : ${tasks}">
+        <tbody th:each="el : ${tasksPage.content}">
         <tr>
             <td th:text="${el.name}"/>
             <td th:text="${el.category.name}"/>
@@ -44,7 +44,25 @@
         </tbody>
     </table>
 </div>
-
+<div th:if="${totalPages > 0}">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${currentPage < 2}? 'disabled' : ''">
+                <a class="page-link" th:href="@{/tasks(size=${tasksPage.size}, page=${currentPage - 1})}">Previous</a>
+            </li>
+            <li class="page-item" th:each="pageNumber : ${pageNumbers}"
+                th:classappend="${pageNumber}==${currentPage}? 'active' : ''">
+                <a class="page-link"
+                   th:href="@{/tasks(size=${tasksPage.size}, page=${pageNumber})}"
+                   th:text=${pageNumber}>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages}? 'disabled' : ''">
+                <a class="page-link" th:href="@{/tasks(size=${tasksPage.size}, page=${currentPage + 1})}">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
 <section class="py-5 text-center container">
     <div class="row py-lg-5">
         <div class="col-lg-6 col-md-8 mx-auto">

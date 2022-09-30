@@ -21,7 +21,7 @@ public class User implements UserDetails {
     private Integer health = 0;
     private Integer creativity = 0;
     private Integer communication = 0;
-    private Integer level = 0;
+    private Integer level = 1;
     private Integer experience = 0;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)

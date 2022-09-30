@@ -59,7 +59,7 @@ public class TasksService {
             list = Collections.emptyList();
         } else {
             int toIndex = Math.min(startItem + pageSize, tasks.size());
-            list = tasks.subList(startItem, toIndex);
+            list = tasks.subList(startItem, toIndex); //в list записывается только нужная часть tasks
         }
 
         Page<Tasks> tasksPage
@@ -67,6 +67,4 @@ public class TasksService {
 
         return tasksPage;
     }
-
-
 }

@@ -28,6 +28,26 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    //ThePoint (Попробовать поработать над дизайном (progress bar) или сделать профиль;
-
+    public String UserRank(Integer level){ //TODO временно! Заменить на отдельную таблицу
+        String rank = "";
+        if (level < 5){
+            rank="Beginner adventurer";
+        }
+        else if (level >= 5 && level < 10){
+            rank="Budding adventurer";
+        }
+        else if (level >= 10 && level < 20){
+            rank="Local hero";
+        }
+        else if (level >= 20 && level < 50){
+            rank="Seasoned adventurer";
+        }
+        else if (level >= 50 && level < 100){
+            rank="People's Hero";
+        }
+        else if (level >= 100){
+            rank="Legendary Hero";
+        }
+        return rank;
+    }
 }

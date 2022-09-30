@@ -10,6 +10,7 @@
 <div class="container mt-5 mb-5">
     <h1>Edit task</h1>
     <form th:object="${tasks}" method="post">
+        <td>Name</td>
         <input type="text" th:field="*{name}" id="name" placeholder="Input name"><br>
         <td>Skill</td>
         <select th:field="*{skill_name}">

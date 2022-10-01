@@ -6,18 +6,22 @@ import com.example.tutorboot.repo.UserRepository;
 import com.example.tutorboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true) //для работы аннотации @PreAuthorize
 @Controller
 public class UserController {
 
@@ -36,14 +40,15 @@ public class UserController {
     }
 
     @GetMapping("/userEdit/{id}")
-    public String userEdit(@PathVariable("id") long id, Model model){
-        Optional<User> user = userRepository.findById(id);
+    public String userEdit(@PathVariable User user, Model model){
         model.addAttribute("user", user);
         return "userEdit";
     }
 
     @PostMapping("/userEdit/{id}")
     public String userPostEdit(User user){
+        Authentication  authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication); //назначение контексту обновленного пользователя
         userRepository.save(user);
         return "redirect:/profile";
     }
@@ -79,7 +84,5 @@ public class UserController {
         model.addAttribute("rank",userService.UserRank(user.getLevel()));
         model.addAttribute("user", user);
         return "profile";
-    }
-
-
+    } //11859
 }

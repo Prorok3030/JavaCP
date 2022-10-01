@@ -136,7 +136,6 @@ public class TaskController {
 
     @PostMapping("/taskEdit/{id}")
     public String taskPostEdit(@AuthenticationPrincipal User user, Tasks tasks){
-        tasks.setUser(user); //TODO Исправить, чтобы пользователь не терялся после передачи формы Edit
         taskRepository.save(tasks);
         return "redirect:/tasks";
     }

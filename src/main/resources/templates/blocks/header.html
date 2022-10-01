@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="header">
     <div class="d-flex flex-column flex-md-row align-items-center mx-2 my-1 pb-1 mb-4 border-bottom">
         <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
@@ -7,6 +8,7 @@
             <h3>&numsp;Task scheduler</h3>
         </a>
         <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+            <a sec:authorize="hasAuthority('ADMIN')" class="me-3 py-2 text-dark text-decoration-none" href="/users">Users</a>
             <a class="me-3 py-2 text-dark text-decoration-none" href="/tasks">Tasks</a>
             <a class="me-3 py-2 text-dark text-decoration-none" href="/profile">Profile</a>
             <a class="me-3 py-2 text-dark text-decoration-none" href="/about">About</a>

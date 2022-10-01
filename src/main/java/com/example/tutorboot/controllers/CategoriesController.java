@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("categories")
+@RequestMapping("/categories")
 public class CategoriesController {
 
     private final CategoriesService categoriesService;

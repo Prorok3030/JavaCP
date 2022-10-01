@@ -11,7 +11,18 @@
     <h1>Edit information</h1>
     <form th:object="${user}" method="post">
         <p><td>Username</td>
-        <input type="text" th:field="*{username}" id="username" placeholder="Input username"></p>
+        <input type="text" th:field="*{username}" id="username" placeholder="Input username"><br>
+        <td>Password</td>
+        <input type="text" th:field="*{password}" id="password" placeholder="Input password"><br>
+        <input th:field="*{active}" id="active" type="hidden">
+        <input th:field="*{strength}" id="strength" type="hidden">
+        <input th:field="*{intelligence}" id="intelligence" type="hidden">
+        <input th:field="*{health}" id="health" type="hidden">
+        <input th:field="*{creativity}" id="creativity" type="hidden">
+        <input th:field="*{communication}" id="communication" type="hidden">
+        <input th:field="*{level}" id="level" type="hidden">
+        <input th:field="*{experience}" id="experience" type="hidden">
+        <input th:field="*{roles}" id="roles" type="hidden"></p>
         <button type="submit" class="btn btn-success">Update</button>
     </form>
 </div>

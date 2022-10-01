@@ -27,6 +27,7 @@
             <option th:each="category : ${categories}" th:value="${category.id}"
                     th:text="${category.name}">
         </select><br>
+        <input th:field="*{user}" id="user" type="hidden">
         <button type="submit" class="btn btn-success">Update</button>
     </form>
 </div>

@@ -16,7 +16,7 @@
                 <div class="profile mr-3 mt-3">
                     <img src="https://images.unsplash.com/photo-1571256365184-a15f13d01997?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
                          alt="..." width="130" class="rounded mb-2 img-thumbnail">
-                    <a th:href="@{/userEdit/{id}(id=${user.id})}" class="btn btn-outline-dark btn-sm btn-block">Edit profile</a>
+                    <a th:href="@{/profileEdit/{id}(id=${user.id})}" class="btn btn-outline-dark btn-sm btn-block">Edit profile</a>
                 </div>
                 <div class="media-body mb-5 text-black">
                     <h4 class="mt-0 mb-0" th:text="${user.username}"></h4>

@@ -1,5 +1,6 @@
 package com.example.tutorboot.controllers;
 
+import com.example.tutorboot.models.Role;
 import com.example.tutorboot.models.Tasks;
 import com.example.tutorboot.models.User;
 import com.example.tutorboot.repo.UserRepository;
@@ -16,8 +17,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,20 +41,50 @@ public class UserController {
         model.addAttribute("users", users);
         return "users";
     }
-
-    @GetMapping("/userEdit/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/userEdit/{user}")
     public String userEdit(@PathVariable User user, Model model){
         model.addAttribute("user", user);
+        model.addAttribute("roles", Role.values());
+        model.addAttribute("roleUser", Role.USER);
         return "userEdit";
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/userEdit/{user}")
+    public String userPostEdit(@AuthenticationPrincipal User user1,
+                               @RequestParam(name="roles[]", required = false) String[] roles,
+                               @RequestParam("id") User user){
+        user.getRoles().clear();
 
-    @PostMapping("/userEdit/{id}")
-    public String userPostEdit(User user){
+        if(roles!=null) {
+            Arrays.stream(roles).forEach(r -> user.getRoles().add(Role.valueOf(r)));
+        }
+        if (user.getId() == user1.getId()) {
+            Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication); //назначение контексту обновленного пользователя
+            userRepository.save(user);
+            return "redirect:/";
+        }
+        else {
+            userRepository.save(user);
+            return "redirect:/users";
+        }
+    }
+
+    @GetMapping("/profileEdit/{user}")
+    public String profileEdit(@PathVariable User user, Model model){
+        model.addAttribute("user", user);
+        model.addAttribute("roles", Role.values());
+        return "profileEdit";
+    }
+    @PostMapping("/profileEdit/{user}")
+    public String profilePostEdit(User user){
         Authentication  authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication); //назначение контексту обновленного пользователя
         userRepository.save(user);
         return "redirect:/profile";
     }
+
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/userDelete/{id}")

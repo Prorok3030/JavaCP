@@ -22,7 +22,8 @@
       <td th:text="${el.id}"/>
       <td th:text="${el.username}"/>
       <td th:text="${el.roles}"/>
-      <td><a class="btn btn-primary" th:href="@{userDelete/{id}(id=${el.id})}" role="button">Delete</a></td>
+      <td><a class="btn btn-primary" th:href="@{userEdit/{id}(id=${el.id})}" role="button">Edit</a></td>
+      <td><a class="btn btn-danger" th:href="@{userDelete/{id}(id=${el.id})}" role="button">Delete</a></td>
     </tr>
     </tbody>
   </table>

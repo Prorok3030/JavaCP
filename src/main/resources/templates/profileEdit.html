@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Task editing</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -8,16 +9,12 @@
 <body>
 <header th:insert="blocks/header :: header"></header>
 <div class="container mt-5 mb-5">
-    <h2>Edit access level</h2>
+    <h1>Edit information</h1>
     <form th:object="${user}" method="post">
-        <h4>Roles:</h4>
-        <div class="form-check" th:each="role : ${roles}">
-            <input class="form-check-input" th:id="${role}" th:name="roles[]" th:value="${role}" th:checked="${#lists.contains(user.roles, role)}"
-                   th:type="${role}==${roleUser}? 'hidden' : 'checkbox'" />
-            <label class="form-check-label" th:text="${role}" /></label>
-        </div>
-        <input th:field="*{username}" id="username" type="hidden">
-        <input th:field="*{password}" id="password" type="hidden">
+        <p><td>Username</td>
+        <input type="text" th:field="*{username}" id="username" placeholder="Input username"><br>
+        <td>Password</td>
+        <input type="text" th:field="*{password}" id="password" placeholder="Input password"><br>
         <input th:field="*{id}" id="id" type="hidden">
         <input th:field="*{active}" id="active" type="hidden">
         <input th:field="*{strength}" id="strength" type="hidden">
@@ -27,6 +24,7 @@
         <input th:field="*{communication}" id="communication" type="hidden">
         <input th:field="*{level}" id="level" type="hidden">
         <input th:field="*{experience}" id="experience" type="hidden">
+        <input th:field="*{roles}" id="roles" type="hidden"></p>
         <button type="submit" class="btn btn-success">Update</button>
     </form>
 </div>

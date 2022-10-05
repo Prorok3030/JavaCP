@@ -1,7 +1,6 @@
 package com.example.tutorboot.controllers;
 
 import com.example.tutorboot.models.Role;
-import com.example.tutorboot.models.Tasks;
 import com.example.tutorboot.models.User;
 import com.example.tutorboot.repo.UserRepository;
 import com.example.tutorboot.service.UserService;
@@ -14,15 +13,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.security.Principal;
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true) //для работы аннотации @PreAuthorize
 @Controller
@@ -78,7 +78,15 @@ public class UserController {
         return "profileEdit";
     }
     @PostMapping("/profileEdit/{user}")
-    public String profilePostEdit(User user){
+    public String profilePostEdit(@Valid User user, BindingResult bindingResult, Model model){
+        if (bindingResult.hasErrors()){
+            return "profileEdit";
+        }
+        User DbUser = userRepository.findByUsername(user.getUsername()); //TODO убрать, если не нужна уникальность имени пользователя
+        if (DbUser != null) {
+            model.addAttribute("message", "Пользователь уже существует");
+            return "profileEdit";
+        }
         Authentication  authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication); //назначение контексту обновленного пользователя
         userRepository.save(user);

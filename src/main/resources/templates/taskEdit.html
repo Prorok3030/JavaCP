@@ -11,7 +11,8 @@
     <h1>Edit task</h1>
     <form th:object="${tasks}" method="post">
         <td>Name</td>
-        <input type="text" th:field="*{name}" id="name" placeholder="Input name"><br>
+        <td><input type="text" th:field="*{name}" placeholder="Input name" class="form-control"> </td>
+        <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div><br>
         <td>Skill</td>
         <select th:field="*{skill_name}">
             <option th:each="skill_name : ${skills}" th:value="${skill_name}"
@@ -27,9 +28,10 @@
             <option th:each="category : ${categories}" th:value="${category.id}"
                     th:text="${category.name}">
         </select><br>
-        <input th:field="*{user}" id="user" type="hidden">
+        <input th:field="*{user}" id="user" type="hidden"><br>
         <button type="submit" class="btn btn-success">Update</button>
-    </form>
+    </form><br>
+    <a class="btn btn-primary" href="/tasks" role="button">Cancel</a>
 </div>
 </body>
 </html>

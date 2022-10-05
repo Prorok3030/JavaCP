@@ -15,9 +15,13 @@
     <b th:text="${message}"></b>
 </div>
 
-<form th:action="@{/registration}" method="post">
-    <div><label> User Name : <input type="text" name="username"/> </label></div>
-    <div><label> Password: <input type="password" name="password"/> </label></div>
+<form method="post" th:object="${user}">
+    <div><label> User Name : <input type="text" th:field="*{username}"/> </label>
+        <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"> Username error</div>
+    </div>
+    <div><label> Password: <input type="password" th:field="*{password}"/> </label>
+        <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"> Password error</div>
+    </div>
     <div><input type="submit" value="Submit"/></div>
 </form>
 </body>

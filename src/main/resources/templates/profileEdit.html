@@ -10,11 +10,18 @@
 <header th:insert="blocks/header :: header"></header>
 <div class="container mt-5 mb-5">
     <h1>Edit information</h1>
+
+    <div style="color:red" th:if="${message}">
+        <b th:text="${message}"></b>
+    </div>
+
     <form th:object="${user}" method="post">
-        <p><td>Username</td>
-        <input type="text" th:field="*{username}" id="username" placeholder="Input username"><br>
+        <td>Username</td>
+        <td><input type="text" th:field="*{username}" id="username" placeholder="Input username"></td>
+        <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"> Username error</div></br>
         <td>Password</td>
-        <input type="text" th:field="*{password}" id="password" placeholder="Input password"><br>
+        <td><input type="text" th:field="*{password}" id="password" placeholder="Input password"></td>
+        <div style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"> Password error</div></br>
         <input th:field="*{id}" id="id" type="hidden">
         <input th:field="*{active}" id="active" type="hidden">
         <input th:field="*{strength}" id="strength" type="hidden">
@@ -24,9 +31,10 @@
         <input th:field="*{communication}" id="communication" type="hidden">
         <input th:field="*{level}" id="level" type="hidden">
         <input th:field="*{experience}" id="experience" type="hidden">
-        <input th:field="*{roles}" id="roles" type="hidden"></p>
-        <button type="submit" class="btn btn-success">Update</button>
-    </form>
+        <input th:field="*{roles}" id="roles" type="hidden">
+        <button type="submit" class="btn btn-success">Update</button></br>
+    </form><br>
+    <a class="btn btn-primary" href="/profile" role="button">Cancel</a>
 </div>
 </body>
 </html>

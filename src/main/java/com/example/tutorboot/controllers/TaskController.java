@@ -16,11 +16,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,14 +51,6 @@ public class TaskController {
 
     private final CategoriesService categoriesService;
 
-//    private static List<String> difficulties;
-//    static {
-//        difficulties = new ArrayList<>();
-//        difficulties.add("low");
-//        difficulties.add("medium");
-//        difficulties.add("high");
-//    }
-
     private static List<String> skills;
     static {
         skills = new ArrayList<>();
@@ -72,7 +63,7 @@ public class TaskController {
 
 
     @GetMapping("/tasks")
-    public String home(@AuthenticationPrincipal User user, Model model, Principal principal,
+    public String home(@AuthenticationPrincipal User user, Model model,
                        @RequestParam("page") Optional<Integer> page,
                        @RequestParam("size") Optional<Integer> size) {
         List<Tasks> tasks = taskRepository.findByUser(user);
@@ -93,13 +84,13 @@ public class TaskController {
 //        Long id = userRepository.findByUsername(principal.getName()).getId();
 //        model.addAttribute("id", "Твой id: " + id); //TODO Возможно оставить только переменную, а строки в кавычках перенести в html
         //model.addAttribute("tasks", tasks);
-        model.addAttribute("username", "Привет, " + principal.getName() + "!");
+        model.addAttribute("username", "Привет, " + user.getUsername() + "!");
         model.addAttribute("user", user);
         return "tasks";
     }
 
     @GetMapping("/taskAdd")
-    public String taskAdd(Model model){
+    public String taskAdd(Tasks tasks, Model model){
         Iterable<Difficulty> difficulty = difficultyRepository.findAll();
         model.addAttribute("difficulties", difficulty);
         model.addAttribute("skills", skills);
@@ -109,10 +100,17 @@ public class TaskController {
 
     @PostMapping("/taskAdd")
     public String taskPostAdd(@AuthenticationPrincipal User user,
-                              @RequestParam String name, @RequestParam String skill, @RequestParam String difficulty, @RequestParam Long category_id, Model model){
-        Difficulty diff = difficultyRepository.findByName(difficulty);
-        Category cat = categoriesService.findOne(category_id);
-        Tasks tasks = new Tasks(name, skill, diff, user, cat);
+                              @Valid Tasks tasks, BindingResult bindingResult, Model model){
+
+        tasks.setUser(user);
+
+        if(bindingResult.hasErrors()){
+            Iterable<Difficulty> difficulty = difficultyRepository.findAll();
+            model.addAttribute("difficulties", difficulty);
+            model.addAttribute("skills", skills);
+            model.addAttribute("categories", categoriesService.findAll());
+            return "taskAdd";
+        }
         taskRepository.save(tasks);
         return "redirect:/taskAdd";
     }
@@ -125,9 +123,6 @@ public class TaskController {
         Category category1 = task1.getCategory();
         model.addAttribute("tasks", tasks);
         model.addAttribute("difficulties", difficulty);
-        //сделать метод, который достает id категории по id задачи,
-        //чтобы сохранилось старое значение категории
-        //и чтобы было красиво!!
         model.addAttribute("categories", categoriesService.findAll());
         model.addAttribute("category", category1.getId());
         model.addAttribute("skills", skills);
@@ -135,7 +130,18 @@ public class TaskController {
     }
 
     @PostMapping("/taskEdit/{id}")
-    public String taskPostEdit(@AuthenticationPrincipal User user, Tasks tasks){
+    public String taskPostEdit(@Valid Tasks tasks, BindingResult bindingResult, Model model){
+
+        if(bindingResult.hasErrors()){
+            Tasks task1 = tasksService.findOne(tasks.getId());
+            Category category1 = task1.getCategory();
+            model.addAttribute("difficulties", difficultyRepository.findAll());
+            model.addAttribute("categories", categoriesService.findAll());
+            model.addAttribute("category", category1.getId());
+            model.addAttribute("skills", skills);
+            return "taskEdit";
+        }
+
         taskRepository.save(tasks);
         return "redirect:/tasks";
     }

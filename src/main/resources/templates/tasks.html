@@ -20,14 +20,21 @@
     <h1>Задачи</h1>
     <a class="btn btn-primary" href="/taskAdd" role="button">Add</a>
     <a class="btn btn-primary" href="/categories" role="button">Categories</a>
-    <table class="table">
+    <a class="btn btn-primary" href="/commandTasks" role="button">Command tasks</a>
+    <a class="btn btn-primary" href="/friends" role="button">Friends</a>
+    <a class="btn btn-primary" href="/requests" role="button">Requests</a>
+<!--    <div>-->
+<!--    <input type="number" name="id" placeholder="Input id" class="form-control"><br>-->
+<!--        <a class="btn btn-primary" th:href="@{/friend/{id}(id=${friend.getId()})}" role="button">Find user</a>-->
+<!--    </div>-->
+    <table id="table_id" class="table">
         <thead class="thead-light">
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Category</th>
             <th scope="col">Skill</th>
             <th scope="col">Difficulty</th>
-            <th scope="col">User_id</th>
+            <th scope="col">User name</th>
         </tr>
         </thead>
         <tbody th:each="el : ${tasks}">
@@ -36,7 +43,7 @@
             <td th:text="${el.category.name}"/>
             <td th:text="${el.skill_name}"/>
             <td th:text="${el.DifficultyName}"/>
-            <td th:text="${el.UserId}"/>
+            <td th:text="${el.user.username}"/>
             <td><a class="btn btn-primary" th:href="@{taskSkillUp/{id}(id=${el.id})}" role="button">Complete</a></td>
             <td><a class="btn btn-primary" th:href="@{taskEdit/{id}(id=${el.id})}" role="button">Edit</a></td>
             <td><a class="btn btn-primary" th:href="@{taskDelete/{id}(id=${el.id})}" role="button">Delete</a></td>

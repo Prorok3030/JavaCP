@@ -1,6 +1,7 @@
 package com.example.tutorboot.service;
 
 import com.example.tutorboot.models.Category;
+import com.example.tutorboot.models.User;
 import com.example.tutorboot.repo.CategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,5 +45,9 @@ public class CategoriesService {
     public void delete(Long id){
         categoriesRepository.deleteById(id);
     }
-
+//    @Transactional
+//    public void createNullCategory(User user){
+//        Category category = new Category("");
+//        categoriesRepository.save(category);
+//    }
 }

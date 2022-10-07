@@ -4,6 +4,8 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Tasks {
@@ -17,19 +19,17 @@ public class Tasks {
     @JoinColumn(name = "difficulty_id")
     private Difficulty difficulty;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @ManyToMany(mappedBy = "tasks")
+    private List<User> users;
 
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
 
-    public Long getUserId() { //TODO Spring Boot magic
-             return user.getId();
-    }
+//    public Long getUserId() { //TODO Spring Boot magic
+//             return user.getId();
+//    }
 
     public String getDifficultyName() { //TODO Spring Boot magic
         return difficulty.getName();
@@ -39,13 +39,20 @@ public class Tasks {
     }
 
 
-    public Tasks(String name, String skill_name, Difficulty difficulty, User user, Category category) {
+    public Tasks(String name, String skill_name, Difficulty difficulty, List<User> users, Category category) {
         this.name = name;
         this.skill_name = skill_name;
         this.difficulty = difficulty;
-        this.user = user;
+        this.users = users;
         this.category = category;
     }
+
+//    public void addTasksToUser(User user){
+//        if(users==null){
+//            users = new ArrayList<>();
+//        }
+//        users.add(user);
+//    }
 
     public Long getId() {
         return id;
@@ -79,12 +86,21 @@ public class Tasks {
         this.difficulty = difficulty;
     }
 
-    public User getUser() {
-        return user;
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
+
+
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 
     public Category getCategory() {

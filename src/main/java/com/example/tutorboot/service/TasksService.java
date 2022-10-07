@@ -1,6 +1,7 @@
 package com.example.tutorboot.service;
 
 import com.example.tutorboot.models.Tasks;
+import com.example.tutorboot.models.User;
 import com.example.tutorboot.repo.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.Optional;
 public class TasksService {
 
     private TaskRepository taskRepository;
+
     @Autowired
     public TasksService(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
@@ -43,6 +45,7 @@ public class TasksService {
     public void delete(Long id){
         taskRepository.deleteById(id);
     }
+
 
 
 }

@@ -23,10 +23,17 @@
             th:text="${difficulties.name}">
     </select><br>
 
-    <select id="category_id" name ="category_id">
+    <td>Category</td>
+    <select id="category_name" name ="category_name">
+<!--        <option  selected="selected"  value="null">Not categories</option>-->
         <option th:each="category : ${categories}"
-                th:text="${category.id}">
-<!--                <input type="hidden" th:field="*{category.id}" />-->
+                th:text="${category.name}">
+    </select><br>
+
+    <td>Friends</td>
+    <select id="friend" name ="friend">
+        <option th:each="friend : ${users}"
+                th:text="${friend.username}">
     </select><br>
 
     <button type="submit" class="btn btn-success">Enter</button>

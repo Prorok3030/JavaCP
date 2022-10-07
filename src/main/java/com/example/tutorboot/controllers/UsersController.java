@@ -7,6 +7,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example.tutorboot.models.User;
 
+import java.util.List;
+
 @Controller
 public class UsersController {
 
@@ -39,9 +41,16 @@ public class UsersController {
 
     @PostMapping("/sendRequest")
     public String sendRequest(@AuthenticationPrincipal User user, @RequestParam(required = false, value = "id") Long id) {
+        List<User> luser = userService.findAll();
         if(user.getId() != id){
-            if(id !=0)
-            userService.addRequest(id, user);
+            User user2 = luser.stream().filter(user1 -> user1.getId() == id).findAny().orElse(null);
+            Long idu = user2.getId();
+            if  (idu == id){
+                User u3 = userService.findById(id);
+                if(!user.getFriends().contains(u3)) {
+                    userService.addRequest(id, user);
+                }
+            }
         }
         else {
             System.out.println("Эй, так нельзя!");

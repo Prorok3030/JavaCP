@@ -1,12 +1,10 @@
 package com.example.tutorboot.service;
 
 import com.example.tutorboot.models.Tasks;
+import com.example.tutorboot.models.User;
 import com.example.tutorboot.repo.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +47,7 @@ public class TasksService {
         taskRepository.deleteById(id);
     }
 
-    public Page<Tasks> findPaginated(Pageable pageable, List<Tasks> tasks) {
+    public Page<Tasks> findPaginated(Pageable pageable, List<Tasks> tasks, User user, Optional<String> sortBy) {
         int pageSize = pageable.getPageSize();
         int currentPage = pageable.getPageNumber();
         int startItem = currentPage * pageSize;
@@ -62,9 +60,29 @@ public class TasksService {
             list = tasks.subList(startItem, toIndex); //в list записывается только нужная часть tasks
         }
 
+        Pageable pageable1 = PageRequest.of(currentPage, pageSize, Sort.Direction.ASC, sortBy.orElse("id"));
+
+//        Page<Tasks> tasksPage
+//                = new PageImpl<Tasks>(list, PageRequest.of(currentPage, pageSize, Sort.by("name")), tasks.size());
+
         Page<Tasks> tasksPage
-                = new PageImpl<Tasks>(list, PageRequest.of(currentPage, pageSize), tasks.size());
+                = taskRepository.findByUser(pageable1,user);
 
         return tasksPage;
     }
+
+//    public String difficultySort(Optional<String> sort){
+//        String diff = "id";
+//        switch (sort) {
+//            case "id": diff = "low";
+//                break;
+//            case "low": diff = "medium";
+//                break;
+//            case "medium": diff = "high";
+//                break;
+//            default: diff = "id";
+//                break;
+//        }
+//        return diff;
+//    }
 }

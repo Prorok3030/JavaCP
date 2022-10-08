@@ -13,6 +13,7 @@ import com.example.tutorboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -65,12 +66,14 @@ public class TaskController {
     @GetMapping("/tasks")
     public String home(@AuthenticationPrincipal User user, Model model,
                        @RequestParam("page") Optional<Integer> page,
-                       @RequestParam("size") Optional<Integer> size) {
+                       @RequestParam("size") Optional<Integer> size,
+                       @RequestParam("sortBy") Optional<String> sortBy) {
         List<Tasks> tasks = taskRepository.findByUser(user);
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(5);
-        Page<Tasks> tasksPage = tasksService.findPaginated(PageRequest.of(currentPage -1, pageSize), tasks);
+        Page<Tasks> tasksPage = tasksService.findPaginated(PageRequest.of(currentPage -1, pageSize), tasks, user, sortBy);
         model.addAttribute("tasksPage", tasksPage);
+        model.addAttribute("name", sortBy.equals(Optional.of("name")) ? "id" : "name");
         int totalPages = tasksPage.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)

@@ -21,6 +21,9 @@
     <tbody th:each="request : ${requests}">
     <tr>
         <td th:text="${request.getUsername()}">value</td>
+        <td><form th:href="@{addToFriend/{id}(id=${request.id})}">
+            <input type="submit" value="Add to friends"/>
+        </form></td>
         <td><form th:method="DELETE" th:action="@{/requestDelete/{id}(id=${request.getId()})}">
             <input type="submit" value="Delete"/>
         </form></td>

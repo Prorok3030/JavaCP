@@ -7,11 +7,11 @@
   <title>All friends</title>
 </head>
 <body>
-<form method="POST" th:action="@{/addToFriend}" th:object="${user}">
-<label for="id">Enter id</label>
-<input type="number" th:field="*{id}"id="id"/>
-  <input type="submit"/>
-</form>
+<!--<form method="POST" th:action="@{/addToFriend}" th:object="${user}">-->
+<!--<label for="id">Enter id</label>-->
+<!--<input type="number" th:field="*{id}"id="id"/>-->
+<!--  <input type="submit"/>-->
+<!--</form>-->
 <table id="table_id" class="table">
   <thead class="thead-light">
   <tr>
@@ -21,7 +21,7 @@
   <tbody th:each="friend : ${friends}">
   <tr>
   <td th:text="${friend.getUsername()}">value</td>
-      <td><a class="btn btn-primary" th:href="@{addToFriend/{id}(id=${friend.id})}" role="button">add to friend</a></td>
+<!--      <td><a class="btn btn-primary" th:href="@{addToFriend/{id}(id=${friend.id})}" role="button">add to friend</a></td>-->
 <!--      <td><a class="btn btn-primary" th:href="@{deleteFriend/{id}(id=${friend.id})}" role="button">Delete</a></td>-->
     <td><form th:method="DELETE" th:action="@{/friendsDelete/{id}(id=${friend.getId()})}">
       <input type="submit" value="Delete"/>

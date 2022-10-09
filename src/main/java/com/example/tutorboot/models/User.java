@@ -38,13 +38,13 @@ public class User implements UserDetails {
     )
     private List<Tasks> tasks;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_user_request",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "request_id")
     )
-    private Set<User> requests;
+    private List<User> requests;
 
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)//странная штука
@@ -204,11 +204,11 @@ public class User implements UserDetails {
         this.friends = friends;
     }
 
-    public Set<User> getRequests() {
+    public List<User> getRequests() {
         return requests;
     }
 
-    public void setRequests(Set<User> requests) {
+    public void setRequests(List<User> requests) {
         this.requests = requests;
     }
 

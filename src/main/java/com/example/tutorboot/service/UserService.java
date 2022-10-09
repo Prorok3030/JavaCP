@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -42,10 +43,25 @@ public class UserService implements UserDetailsService {
     //ThePoint (Попробовать поработать над дизайном (progress bar) или сделать профиль;
 
     @Transactional
-    public void addFriend(Long id, User user) {
-        Optional<User> foundedUser = userRepository.findById(id);
-        user.getFriends().add(foundedUser.orElse(null));
-        userRepository.save(user);
+    public void addToFriend(Long id, User user) {
+        User foundRequest = userRepository.findById(id).orElse(null);
+        Set<User> listFriends = user.getFriends();
+        if(!listFriends.contains(foundRequest)){
+            listFriends.add(foundRequest);
+            user.setFriends(listFriends);
+            List<User> listRequests = user.getRequests();
+            listRequests.remove(foundRequest);
+            user.setRequests(listRequests);
+            userRepository.save(user);
+            User userWhoSendRequest = userRepository.findById(id).orElse(null);
+            List<User> listReqForUserWhoSendRequest = userWhoSendRequest.getRequests();
+            listReqForUserWhoSendRequest.remove(user);
+            userWhoSendRequest.setRequests(listReqForUserWhoSendRequest);
+            Set<User> listUserWhoSendRequest = userWhoSendRequest.getFriends();
+            listUserWhoSendRequest.add(user);
+            userWhoSendRequest.setFriends(listFriends);
+            userRepository.save(userWhoSendRequest);
+        }
     }
 
 //    @Transactional(readOnly = true)
@@ -66,9 +82,10 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public Set<User> allRequests(User user) {
-        Set<User> foundRequests = user.getRequests();
-        System.out.println(foundRequests);
+    public List<User> allRequests(User user) {
+//        List<User> allusers = userRepository.findAll();
+//        List u = allusers.stream().filter(user1 -> user1.getRequests() == user.getRequests()).findAny().orElse(null);
+        List<User> foundRequests = user.getRequests().stream().toList();
         return foundRequests;
     }
 
@@ -82,8 +99,10 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void addRequest(Long id, User user) {
-        Optional<User> foundRequest = userRepository.findById(id);
-        user.getRequests().add(foundRequest.orElse(null));
+        User foundRequest = userRepository.findById(id).orElse(null);
+        List<User> listRequests = user.getRequests();
+        listRequests.add(foundRequest);
+        user.setRequests(listRequests);
         userRepository.save(user);
     }
 
@@ -96,8 +115,13 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public void deleteRequest(User user, Long id) {
-        Set<User> listRequests = user.getRequests();
+        List<User> listRequests = user.getRequests();
         listRequests.removeIf(f -> f.getId() == id);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void save(User user){
         userRepository.save(user);
     }
 

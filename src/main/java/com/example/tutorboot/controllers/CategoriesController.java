@@ -1,26 +1,34 @@
 package com.example.tutorboot.controllers;
 
 import com.example.tutorboot.models.Category;
+import com.example.tutorboot.models.User;
+import com.example.tutorboot.repo.CategoriesRepository;
 import com.example.tutorboot.service.CategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
-@RequestMapping("/categories")
+@RequestMapping("categories")
 public class CategoriesController {
 
     private final CategoriesService categoriesService;
+    private final CategoriesRepository categoriesRepository;
 
     @Autowired
-    public CategoriesController(CategoriesService categoriesService) {
+    public CategoriesController(CategoriesService categoriesService, CategoriesRepository categoriesRepository) {
         this.categoriesService = categoriesService;
+        this.categoriesRepository = categoriesRepository;
     }
 
     @GetMapping()
-    public String index(Model model){
-        model.addAttribute("categories", categoriesService.findAll());
+    public String index(@AuthenticationPrincipal User user, Model model){
+        List<Category> categories =  categoriesRepository.findByUser(user);
+        model.addAttribute("categories", categories);
         return "categories/index";
     }
 
@@ -36,7 +44,8 @@ public class CategoriesController {
     }
 
     @PostMapping()
-    public String create(@ModelAttribute("category") Category category){
+    public String create(@AuthenticationPrincipal User user, @ModelAttribute("category") Category category){
+        category.setUser(user);
         categoriesService.save(category);
         return "redirect:/categories";
     }
@@ -48,7 +57,7 @@ public class CategoriesController {
     }
 
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute("category") Category category,@PathVariable("id") Long id){
+    public String update(@AuthenticationPrincipal User user,@ModelAttribute("category") Category category,@PathVariable("id") Long id){
         categoriesService.update(id,category);
         return "redirect:/categories";
     }

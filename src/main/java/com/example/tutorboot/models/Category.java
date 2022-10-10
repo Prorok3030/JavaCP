@@ -1,6 +1,7 @@
 package com.example.tutorboot.models;
 
 import com.sun.istack.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.util.List;
@@ -11,9 +12,14 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @NotNull
+    @Value("not category")
     private String name;
     @OneToMany(mappedBy = "category")
     private List<Tasks> tasks;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     public Category(){
     }
@@ -44,6 +50,14 @@ public class Category {
 
     public void setTasks(List<Tasks> tasks) {
         this.tasks = tasks;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
 

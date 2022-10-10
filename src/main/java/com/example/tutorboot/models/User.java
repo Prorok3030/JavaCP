@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,6 +33,9 @@ public class User implements UserDetails {
     private Integer communication = 0;
     private Integer level = 1;
     private Integer experience = 0;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private List<Category> category;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
@@ -124,6 +128,14 @@ public class User implements UserDetails {
 
     public void setExperience(Integer experience) {
         this.experience = experience;
+    }
+
+    public List<Category> getCategory() {
+        return category;
+    }
+
+    public void setCategory(List<Category> category) {
+        this.category = category;
     }
 
     @Override

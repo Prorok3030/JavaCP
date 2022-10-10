@@ -1,7 +1,9 @@
 package com.example.tutorboot.service;
 
 import com.example.tutorboot.models.Category;
+import com.example.tutorboot.models.User;
 import com.example.tutorboot.repo.CategoriesRepository;
+import com.example.tutorboot.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,10 +16,12 @@ import java.util.Optional;
 public class CategoriesService {
 
     private final CategoriesRepository categoriesRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public CategoriesService(CategoriesRepository categoriesRepository) {
+    public CategoriesService(CategoriesRepository categoriesRepository, UserRepository userRepository) {
         this.categoriesRepository = categoriesRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Category> findAll(){

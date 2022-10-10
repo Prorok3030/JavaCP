@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -44,7 +46,10 @@ public class CategoriesController {
     }
 
     @PostMapping()
-    public String create(@AuthenticationPrincipal User user, @ModelAttribute("category") Category category){
+    public String create(@AuthenticationPrincipal User user, @ModelAttribute("category") @Valid Category category, BindingResult bindingResult){
+        if (bindingResult.hasErrors())
+            return "categories/new";
+
         category.setUser(user);
         categoriesService.save(category);
         return "redirect:/categories";
@@ -57,7 +62,10 @@ public class CategoriesController {
     }
 
     @PatchMapping("/{id}")
-    public String update(@AuthenticationPrincipal User user,@ModelAttribute("category") Category category,@PathVariable("id") Long id){
+    public String update(@ModelAttribute("category") @Valid Category category,BindingResult bindingResult, @PathVariable("id") Long id){
+        if (bindingResult.hasErrors())
+            return "categories/edit";
+
         categoriesService.update(id,category);
         return "redirect:/categories";
     }

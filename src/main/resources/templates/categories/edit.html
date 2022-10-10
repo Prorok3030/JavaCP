@@ -10,6 +10,7 @@
 <form th:method="PATCH" th:action="@{/categories/{id}(id=${category.getId()})}" th:object="${category}">
   <label for="name">Enter name</label>
   <input type="text" th:field="*{name}" id="name">
+  <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>
   <input type="hidden" th:field="*{user}" th:value="${category.user}"/>
   <br/>
   <input type="submit" value="Update"/>

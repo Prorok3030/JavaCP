@@ -10,6 +10,7 @@
 <form th:method="POST" th:action="@{/categories}" th:object="${category}">
   <label for="name">Enter name</label>
   <input type="text" th:field="*{name}" id="name"/>
+  <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>
   <br/>
   <input type="submit" value="Create"/>
   <a class="btn btn-primary" href="/categories" role="button">Back to list categories</a>

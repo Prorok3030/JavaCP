@@ -4,6 +4,8 @@ import com.sun.istack.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -11,7 +13,8 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @NotNull
+    @NotEmpty(message = "Name should not be empty")
+    @Size(min = 5, max = 100, message = "Name task should be between 5 and 100 characters")
     private String name;
     @OneToMany(mappedBy = "category")
     private List<Tasks> tasks;

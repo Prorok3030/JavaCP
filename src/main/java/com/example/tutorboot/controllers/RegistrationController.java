@@ -2,7 +2,9 @@ package com.example.tutorboot.controllers;
 
 import com.example.tutorboot.models.Role;
 import com.example.tutorboot.models.User;
+import com.example.tutorboot.repo.CategoriesRepository;
 import com.example.tutorboot.repo.UserRepository;
+import com.example.tutorboot.service.CategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,9 @@ public class RegistrationController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CategoriesService categoriesService;
+
     @GetMapping("/registration")
     public String registration(User user){
         return "registration";
@@ -36,9 +41,9 @@ public class RegistrationController {
             return "registration";
         }
 
-
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
+        categoriesService.createCommon(user);
         userRepository.save(user);
 
         return "redirect:/tasks";

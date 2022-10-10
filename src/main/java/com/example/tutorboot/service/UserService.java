@@ -22,31 +22,31 @@ public class UserService implements UserDetailsService {
     //TODO Переместить в другое место
     public void UserExpUp (User user, Integer diff){
         user.setExperience(user.getExperience() + diff);
-        if (user.getExperience() >= 50){
+        if (user.getExperience() >= 100){
             user.setLevel(user.getLevel() + 1);
-            user.setExperience(user.getExperience() - 50);
+            user.setExperience(user.getExperience() - 100);
         }
     }
 
     public String UserRank(Integer level){ //TODO временно! Заменить на отдельную таблицу
         String rank = "";
         if (level < 5){
-            rank="Beginner adventurer";
+            rank="Начинающий приключенец";
         }
         else if (level >= 5 && level < 10){
-            rank="Budding adventurer";
+            rank="Подающий надежды";
         }
         else if (level >= 10 && level < 20){
-            rank="Local hero";
+            rank="Местный герой";
         }
         else if (level >= 20 && level < 50){
-            rank="Seasoned adventurer";
+            rank="Опытный приключенец";
         }
         else if (level >= 50 && level < 100){
-            rank="People's Hero";
+            rank="Народный герой";
         }
         else if (level >= 100){
-            rank="Legendary Hero";
+            rank="Легендарный герой";
         }
         return rank;
     }

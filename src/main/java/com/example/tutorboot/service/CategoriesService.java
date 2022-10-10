@@ -33,6 +33,11 @@ public class CategoriesService {
         return foundCategory.orElse(null);
     }
 
+    public void createCommon(User user){
+        Category category = new Category("Общее",user);
+        categoriesRepository.save(category);
+    }
+
     @Transactional
     public void save(Category category){
         categoriesRepository.save(category);

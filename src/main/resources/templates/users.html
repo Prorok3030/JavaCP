@@ -13,8 +13,8 @@
     <thead class="thead-light">
     <tr>
       <th scope="col">ID</th>
-      <th scope="col">Name</th>
-      <th scope="col">Role</th>
+      <th scope="col">Имя</th>
+      <th scope="col">Роли</th>
     </tr>
     </thead>
     <tbody th:each="el : ${users}">
@@ -22,30 +22,11 @@
       <td th:text="${el.id}"/>
       <td th:text="${el.username}"/>
       <td th:text="${el.roles}"/>
-      <td><a class="btn btn-primary" th:href="@{userEdit/{id}(id=${el.id})}" role="button">Edit</a></td>
-      <td><a class="btn btn-danger" th:href="@{userDelete/{id}(id=${el.id})}" role="button">Delete</a></td>
+      <td><a class="btn btn-primary" th:href="@{userEdit/{id}(id=${el.id})}" role="button">Редактировать</a></td>
+      <td><a class="btn btn-danger" th:href="@{userDelete/{id}(id=${el.id})}" role="button">Удалить</a></td>
     </tr>
     </tbody>
   </table>
-</div>
-<div th:if="${tasksPage.totalPages > 0}">
-  <nav aria-label="Page navigation example">
-    <ul class="pagination">
-      <li class="page-item" th:classappend="${currentPage < 2}? 'disabled' : ''">
-        <a class="page-link" th:href="@{/tasks(size=${tasksPage.size}, page=${currentPage - 1})}">Previous</a>
-      </li>
-      <li class="page-item" th:each="pageNumber : ${pageNumbers}"
-          th:classappend="${pageNumber}==${currentPage}? 'active' : ''">
-        <a class="page-link"
-           th:href="@{/tasks(size=${tasksPage.size}, page=${pageNumber})}"
-           th:text=${pageNumber}>
-        </a>
-      </li>
-      <li class="page-item" th:classappend="${currentPage == tasksPage.totalPages}? 'disabled' : ''">
-        <a class="page-link" th:href="@{/tasks(size=${tasksPage.size}, page=${currentPage + 1})}">Next</a>
-      </li>
-    </ul>
-  </nav>
 </div>
 </body>
 </html>

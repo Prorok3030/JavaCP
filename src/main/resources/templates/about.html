@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
+    <title>О приложении</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
 </head>
 <body>
 <header th:insert="blocks/header :: header"></header>
-<p th:text="'Ну короче, это страница о сайте ё моё. Вот. Думаю, клёво о очень'" />
+<div class="u-align-center u-container-style u-grey-5 u-layout-cell u-size-30 u-layout-cell-2">
+    <div class="u-container-layout u-valign-middle-lg u-valign-middle-md u-valign-middle-xl u-container-layout-2">
+        <p class="u-text u-text-grey-50 u-text-2">Данное приложения помогает современному человеку, загруженному множеством задач, легко организовывать рабочий процесс, правильно распределять фокус внимания, следить за выполнением поставленных целей, успевать сделать все задачи в срок. Кроме того, онлайн планировщик задач позволяет не растрачивать как рабочее, так и личное время понапрасну.</p>
+        <div class="u-social-icons u-spacing-30 u-social-icons-1">
+        </div>
+    </div>
+</div>
 </body>
 </html>

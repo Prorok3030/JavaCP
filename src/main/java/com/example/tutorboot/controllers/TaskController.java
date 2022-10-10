@@ -55,11 +55,11 @@ public class TaskController {
     private static List<String> skills;
     static {
         skills = new ArrayList<>();
-        skills.add("strength");
-        skills.add("intelligence");
-        skills.add("health");
-        skills.add("creativity");
-        skills.add("communication");
+        skills.add("Сила");
+        skills.add("Интеллект");
+        skills.add("Здоровье");
+        skills.add("Креативность");
+        skills.add("Общение");
     }
 
 
@@ -93,9 +93,8 @@ public class TaskController {
     }
 
     @GetMapping("/taskAdd")
-    public String taskAdd(@AuthenticationPrincipal User user, Model model){
+    public String taskAdd(@AuthenticationPrincipal User user, Tasks tasks, Model model){
         Iterable<Difficulty> difficulty = difficultyRepository.findAll();
-
         model.addAttribute("difficulties", difficulty);
         model.addAttribute("skills", skills);
         model.addAttribute("categories", categoriesService.findByUser(user));
@@ -104,15 +103,19 @@ public class TaskController {
 
     @PostMapping("/taskAdd")
     public String taskPostAdd(@AuthenticationPrincipal User user,
-                              @RequestParam String name, @RequestParam String skill, @RequestParam String difficulty, @RequestParam String category_name, Model model){
-        Difficulty diff = difficultyRepository.findByName(difficulty);
-        Category cat = categoriesService.findByNameAndUser(category_name, user);
-//        List<User> lusers = new ArrayList<>();
-//        lusers.add(user);
+                              @Valid Tasks tasks, BindingResult bindingResult, Model model){
 
-        Tasks task = new Tasks(name, skill, diff, cat, user);
-        taskRepository.save(task);
-        return "redirect:/tasks";
+        tasks.setUser(user);
+
+        if(bindingResult.hasErrors()){
+            Iterable<Difficulty> difficulty = difficultyRepository.findAll();
+            model.addAttribute("difficulties", difficulty);
+            model.addAttribute("skills", skills);
+            model.addAttribute("categories", categoriesService.findAll());
+            return "taskAdd";
+        }
+        taskRepository.save(tasks);
+        return "redirect:/taskAdd";
     }
 
     @GetMapping("/taskEdit/{id}")
@@ -159,15 +162,15 @@ public class TaskController {
         Integer difPoint = difficulty.getPoints();
 
         switch (tasks.getSkill_name()) {
-            case "strength": user.setStrength(user.getStrength() + difPoint);
+            case "Сила": user.setStrength(user.getStrength() + difPoint);
                 break;
-            case "intelligence": user.setIntelligence(user.getIntelligence() + difPoint);
+            case "Интеллект": user.setIntelligence(user.getIntelligence() + difPoint);
                 break;
-            case "health": user.setHealth(user.getHealth() + difPoint);
+            case "Здоровье": user.setHealth(user.getHealth() + difPoint);
                 break;
-            case "creativity": user.setCreativity(user.getCreativity() + difPoint);
+            case "Креативность": user.setCreativity(user.getCreativity() + difPoint);
                 break;
-            case "communication": user.setCommunication(user.getCommunication() + difPoint);
+            case "Общение": user.setCommunication(user.getCommunication() + difPoint);
                 break;
         }
         userService.UserExpUp(user,difPoint);

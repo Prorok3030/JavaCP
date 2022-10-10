@@ -14,7 +14,6 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @NotEmpty(message = "Name should not be empty")
-    @Size(min = 5, max = 100, message = "Name task should be between 5 and 100 characters")
     private String name;
     @OneToMany(mappedBy = "category")
     private List<Tasks> tasks;
@@ -27,9 +26,11 @@ public class Category {
         this.name = "not category";
     }
 
-    public Category(String name) {
+    public Category(String name, User user) {
         this.name = name;
+        this.user = user;
     }
+
 
     public Long getId() {
         return id;

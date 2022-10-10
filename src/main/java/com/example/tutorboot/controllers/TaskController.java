@@ -93,29 +93,26 @@ public class TaskController {
     }
 
     @GetMapping("/taskAdd")
-    public String taskAdd(Tasks tasks, Model model){
+    public String taskAdd(@AuthenticationPrincipal User user, Model model){
         Iterable<Difficulty> difficulty = difficultyRepository.findAll();
+
         model.addAttribute("difficulties", difficulty);
         model.addAttribute("skills", skills);
-        model.addAttribute("categories", categoriesService.findAll());
+        model.addAttribute("categories", categoriesService.findByUser(user));
         return "taskAdd";
     }
 
     @PostMapping("/taskAdd")
     public String taskPostAdd(@AuthenticationPrincipal User user,
-                              @Valid Tasks tasks, BindingResult bindingResult, Model model){
+                              @RequestParam String name, @RequestParam String skill, @RequestParam String difficulty, @RequestParam String category_name, Model model){
+        Difficulty diff = difficultyRepository.findByName(difficulty);
+        Category cat = categoriesService.findByNameAndUser(category_name, user);
+//        List<User> lusers = new ArrayList<>();
+//        lusers.add(user);
 
-        tasks.setUser(user);
-
-        if(bindingResult.hasErrors()){
-            Iterable<Difficulty> difficulty = difficultyRepository.findAll();
-            model.addAttribute("difficulties", difficulty);
-            model.addAttribute("skills", skills);
-            model.addAttribute("categories", categoriesService.findAll());
-            return "taskAdd";
-        }
-        taskRepository.save(tasks);
-        return "redirect:/taskAdd";
+        Tasks task = new Tasks(name, skill, diff, cat, user);
+        taskRepository.save(task);
+        return "redirect:/tasks";
     }
 
     @GetMapping("/taskEdit/{id}")

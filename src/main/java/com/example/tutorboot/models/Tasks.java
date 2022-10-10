@@ -30,6 +30,14 @@ public class Tasks {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
+    public Tasks(String name, String skill, Difficulty diff, Category cat, User user) {
+        this.name = name;
+        this.skill_name = skill;
+        this.difficulty = diff;
+        this.category = cat;
+        this.user = user;
+    }
+
 
     public Long getUserId() { //TODO Spring Boot magic
              return user.getId();

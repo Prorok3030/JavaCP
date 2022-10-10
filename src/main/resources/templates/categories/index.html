@@ -6,9 +6,28 @@
     <meta charset="UTF-8">
     <title>All categories</title>
 </head>
-<body>
-<div th:each="category : ${categories}">
-    <a th:href="@{/categories/{id}(id=${category.getId()})}" th:text="${category.getName()}">task</a>
+<body class="mx-2">
+<header th:insert="blocks/header :: header"></header>
+<div>
+    <h1>Категории</h1>
+    <table class="table">
+        <thead class="thead-light">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">name</th>
+        </tr>
+        </thead>
+        <tbody th:each="category : ${categories}">
+        <tr>
+            <td th:text="${category.id}"/>
+            <td th:text="${category.name}"/>
+            <td><a class="btn btn-primary" th:href="@{/categories/{id}/edit(id=${category.getId()})}">Edit</a></td>
+            <td><form th:method="DELETE" th:action="@{/categories/{id}(id=${category.getId()})}">
+                <input type="submit" value="Delete"/>
+            </form></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 <br/>
 <a class="btn btn-primary" href="/tasks" role="button">Back to list tasks</a>

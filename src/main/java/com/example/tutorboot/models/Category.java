@@ -12,7 +12,6 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @NotNull
-    @Value("not category")
     private String name;
     @OneToMany(mappedBy = "category")
     private List<Tasks> tasks;
@@ -22,6 +21,7 @@ public class Category {
     private User user;
 
     public Category(){
+        this.name = "not category";
     }
 
     public Category(String name) {

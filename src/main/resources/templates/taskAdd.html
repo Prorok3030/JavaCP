@@ -9,29 +9,29 @@
 
 <header th:insert="blocks/header :: header"></header>
 <div class="container mt-5 mb-5">
-<h1>Add task</h1>
-<form method="post" th:object="${tasks}"> <!--По умолчанию отправляет на текущую страницу-->
-    <td>Name</td>
-    <td><input type="text" th:field="*{name}" placeholder="Input name" class="form-control"> </td>
-    <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div><br>
-    <td>Skill</td>
-    <select id="skill_name" th:field="*{skill_name}">
-        <option th:each="skills : ${skills}" th:value="${skills}"
-                th:text="${skills}">
-    </select><br>
-    <td>Difficulty</td>
-    <select id="difficulty" th:field="*{difficulty}">
-        <option th:each="difficulties : ${difficulties}" th:value="${difficulties.id}"
-            th:text="${difficulties.name}">
-    </select><br>
-    <td>Category</td>
-    <select id="category" th:field="*{category}">
-        <option th:each="category : ${categories}" th:value="${category.id}"
-                th:text="${category.name}">
-    </select><br>
+    <h1>Add task</h1>
+    <form method="post"> <!--По умолчанию отправляет на текущую страницу-->
+        <input type="text" name="name" placeholder="Input name" class="form-control"><br>
+        <td>Skill</td>
+        <select id="skill" name ="skill">
+            <option th:each="skills : ${skills}"
+                    th:text="${skills}">
+        </select><br>
+        <td>Difficulty</td>
+        <select id="difficulty" name ="difficulty">
+            <option th:each="difficulties : ${difficulties}"
+                    th:text="${difficulties.name}">
+        </select><br>
 
-    <button type="submit" class="btn btn-success">Enter</button>
-</form> <br>
+        <td>Category</td>
+        <select id="category_name" name ="category_name">
+            <!--        <option  selected="selected"  value="null">Not categories</option>-->
+            <option th:each="category : ${categories}"
+                    th:text="${category.name}">
+        </select><br>
+
+        <button type="submit" class="btn btn-success">Enter</button>
+    </form> <br>
     <a class="btn btn-primary" href="/tasks" role="button">Main page</a>
 </div>
 </body>

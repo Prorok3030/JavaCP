@@ -34,7 +34,7 @@ public class TasksService {
     @Transactional
     public void save(Tasks tasks){
         taskRepository.save(tasks);
-    }
+    } //TODO переписать методы из репозитория в сервис и поменять их в контроллерах
 
     @Transactional
     public void update(Long id, Tasks updatedTask){
@@ -62,27 +62,9 @@ public class TasksService {
 
         Pageable pageable1 = PageRequest.of(currentPage, pageSize, Sort.Direction.ASC, sortBy.orElse("id"));
 
-//        Page<Tasks> tasksPage
-//                = new PageImpl<Tasks>(list, PageRequest.of(currentPage, pageSize, Sort.by("name")), tasks.size());
-
         Page<Tasks> tasksPage
                 = taskRepository.findByUser(pageable1,user);
 
         return tasksPage;
     }
-
-//    public String difficultySort(Optional<String> sort){
-//        String diff = "id";
-//        switch (sort) {
-//            case "id": diff = "low";
-//                break;
-//            case "low": diff = "medium";
-//                break;
-//            case "medium": diff = "high";
-//                break;
-//            default: diff = "id";
-//                break;
-//        }
-//        return diff;
-//    }
 }

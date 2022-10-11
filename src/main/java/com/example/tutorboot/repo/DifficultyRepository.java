@@ -1,11 +1,9 @@
 package com.example.tutorboot.repo;
 
 import com.example.tutorboot.models.Difficulty;
-import com.example.tutorboot.models.Tasks;
-import com.example.tutorboot.models.User;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DifficultyRepository extends CrudRepository<Difficulty, Long> {
+public interface DifficultyRepository extends JpaRepository<Difficulty, Long> {
     Difficulty findByName(String name);
 
 }

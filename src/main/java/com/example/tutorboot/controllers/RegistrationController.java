@@ -2,15 +2,12 @@ package com.example.tutorboot.controllers;
 
 import com.example.tutorboot.models.Role;
 import com.example.tutorboot.models.User;
-import com.example.tutorboot.repo.CategoriesRepository;
-import com.example.tutorboot.repo.UserRepository;
 import com.example.tutorboot.service.CategoriesService;
+import com.example.tutorboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -19,11 +16,16 @@ import java.util.Map;
 
 @Controller
 public class RegistrationController {
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
-    private CategoriesService categoriesService;
+    public RegistrationController(UserService userService, CategoriesService categoriesService) {
+        this.userService = userService;
+        this.categoriesService = categoriesService;
+    }
+
+    private final UserService userService;
+
+    private final CategoriesService categoriesService;
 
     @GetMapping("/registration")
     public String registration(User user){
@@ -35,7 +37,7 @@ public class RegistrationController {
         if(bindingResult.hasErrors()){
             return "registration";
         }
-        User DbUser = userRepository.findByUsername(user.getUsername());
+        User DbUser = userService.findByUsername(user.getUsername());
         if (DbUser != null) {
             model.put("message", "Пользователь уже существует");
             return "registration";
@@ -44,7 +46,7 @@ public class RegistrationController {
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
         categoriesService.createCommon(user);
-        userRepository.save(user);
+        userService.save(user);
 
         return "redirect:/tasks";
     }

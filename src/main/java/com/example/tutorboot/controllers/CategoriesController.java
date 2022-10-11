@@ -2,7 +2,6 @@ package com.example.tutorboot.controllers;
 
 import com.example.tutorboot.models.Category;
 import com.example.tutorboot.models.User;
-import com.example.tutorboot.repo.CategoriesRepository;
 import com.example.tutorboot.service.CategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,17 +18,15 @@ import java.util.List;
 public class CategoriesController {
 
     private final CategoriesService categoriesService;
-    private final CategoriesRepository categoriesRepository;
 
     @Autowired
-    public CategoriesController(CategoriesService categoriesService, CategoriesRepository categoriesRepository) {
+    public CategoriesController(CategoriesService categoriesService) {
         this.categoriesService = categoriesService;
-        this.categoriesRepository = categoriesRepository;
     }
 
     @GetMapping()
     public String index(@AuthenticationPrincipal User user, Model model){
-        List<Category> categories =  categoriesRepository.findByUser(user);
+        List<Category> categories =  categoriesService.findByUser(user);
         model.addAttribute("categories", categories);
         return "categories/index";
     }

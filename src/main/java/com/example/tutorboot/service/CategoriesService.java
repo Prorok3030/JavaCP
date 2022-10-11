@@ -38,6 +38,10 @@ public class CategoriesService {
         categoriesRepository.save(category);
     }
 
+    public List<Category> findByUser(User user){
+        return categoriesRepository.findByUser(user);
+    }
+
     @Transactional
     public void save(Category category){
         categoriesRepository.save(category);
@@ -54,14 +58,6 @@ public class CategoriesService {
         categoriesRepository.deleteById(id);
     }
 
-    @Transactional(readOnly = true)
-    public List<Category> findByUser(User user){
-        return categoriesRepository.findByUser(user);
-    }
 
-    @Transactional
-    public Category findByNameAndUser(String category_name, User user){
-        return categoriesRepository.findByNameAndUser(category_name, user);
-    }
 
 }

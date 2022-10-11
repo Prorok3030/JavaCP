@@ -4,25 +4,23 @@ import com.example.tutorboot.models.Category;
 import com.example.tutorboot.models.Difficulty;
 import com.example.tutorboot.models.Tasks;
 import com.example.tutorboot.models.User;
-import com.example.tutorboot.repo.DifficultyRepository;
-import com.example.tutorboot.repo.TaskRepository;
-import com.example.tutorboot.repo.UserRepository;
 import com.example.tutorboot.service.CategoriesService;
+import com.example.tutorboot.service.DifficultyService;
 import com.example.tutorboot.service.TasksService;
 import com.example.tutorboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,44 +29,28 @@ import java.util.stream.IntStream;
 @Controller
 public class TaskController {
 
-    private final TaskRepository taskRepository;
-
-    public TaskController(TaskRepository taskRepository, TasksService tasksService, CategoriesService categoriesService) {
-        this.taskRepository = taskRepository;
+    @Autowired
+    public TaskController(TasksService tasksService, UserService userService,CategoriesService categoriesService, DifficultyService difficultyService) {
         this.tasksService = tasksService;
+        this.userService = userService;
         this.categoriesService = categoriesService;
+        this.difficultyService = difficultyService;
     }
 
-    @Autowired
-    private UserRepository userRepository;
+    private final DifficultyService difficultyService;
 
-    @Autowired
-    private DifficultyRepository difficultyRepository;
-
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     private final TasksService tasksService;
 
     private final CategoriesService categoriesService;
-
-    private static List<String> skills;
-    static {
-        skills = new ArrayList<>();
-        skills.add("Сила");
-        skills.add("Интеллект");
-        skills.add("Здоровье");
-        skills.add("Креативность");
-        skills.add("Общение");
-    }
-
 
     @GetMapping("/tasks")
     public String home(@AuthenticationPrincipal User user, Model model,
                        @RequestParam("page") Optional<Integer> page,
                        @RequestParam("size") Optional<Integer> size,
                        @RequestParam("sortBy") Optional<String> sortBy) {
-        List<Tasks> tasks = taskRepository.findByUser(user);
+        List<Tasks> tasks = tasksService.findByUser(user);
         int currentPage = page.orElse(1);
         int pageSize = size.orElse(5);
         Page<Tasks> tasksPage = tasksService.findPaginated(PageRequest.of(currentPage -1, pageSize), tasks, user, sortBy);
@@ -84,9 +66,6 @@ public class TaskController {
             model.addAttribute("totalPages", totalPages);
         }
 
-//        Long id = userRepository.findByUsername(principal.getName()).getId();
-//        model.addAttribute("id", "Твой id: " + id); //TODO Возможно оставить только переменную, а строки в кавычках перенести в html
-        //model.addAttribute("tasks", tasks);
         model.addAttribute("username", "Привет, " + user.getUsername() + "!");
         model.addAttribute("user", user);
         return "tasks";
@@ -94,9 +73,9 @@ public class TaskController {
 
     @GetMapping("/taskAdd")
     public String taskAdd(@AuthenticationPrincipal User user, Tasks tasks, Model model){
-        Iterable<Difficulty> difficulty = difficultyRepository.findAll();
+        Iterable<Difficulty> difficulty = difficultyService.findAll();
         model.addAttribute("difficulties", difficulty);
-        model.addAttribute("skills", skills);
+        model.addAttribute("skills", tasksService.getSkills());
         model.addAttribute("categories", categoriesService.findByUser(user));
         return "taskAdd";
     }
@@ -108,27 +87,27 @@ public class TaskController {
         tasks.setUser(user);
 
         if(bindingResult.hasErrors()){
-            Iterable<Difficulty> difficulty = difficultyRepository.findAll();
+            Iterable<Difficulty> difficulty = difficultyService.findAll();
             model.addAttribute("difficulties", difficulty);
-            model.addAttribute("skills", skills);
+            model.addAttribute("skills", tasksService.getSkills());
             model.addAttribute("categories", categoriesService.findAll());
             return "taskAdd";
         }
-        taskRepository.save(tasks);
+        tasksService.save(tasks);
         return "redirect:/taskAdd";
     }
 
     @GetMapping("/taskEdit/{id}")
     public String taskEdit(@PathVariable("id") long id, Model model){
-        Optional<Tasks> tasks = taskRepository.findById(id); //TODO Optional (в методе taskSkillUp есть альтернативное решение)
-        Iterable<Difficulty> difficulty = difficultyRepository.findAll();
+        Tasks tasks = tasksService.findOne(id);
+        Iterable<Difficulty> difficulty = difficultyService.findAll();
         Tasks task1 = tasksService.findOne(id);
         Category category1 = task1.getCategory();
         model.addAttribute("tasks", tasks);
         model.addAttribute("difficulties", difficulty);
         model.addAttribute("categories", categoriesService.findAll());
         model.addAttribute("category", category1.getId());
-        model.addAttribute("skills", skills);
+        model.addAttribute("skills", tasksService.getSkills());
         return "taskEdit";
     }
 
@@ -138,44 +117,31 @@ public class TaskController {
         if(bindingResult.hasErrors()){
             Tasks task1 = tasksService.findOne(tasks.getId());
             Category category1 = task1.getCategory();
-            model.addAttribute("difficulties", difficultyRepository.findAll());
+            model.addAttribute("difficulties", difficultyService.findAll());
             model.addAttribute("categories", categoriesService.findAll());
             model.addAttribute("category", category1.getId());
-            model.addAttribute("skills", skills);
+            model.addAttribute("skills", tasksService.getSkills());
             return "taskEdit";
         }
 
-        taskRepository.save(tasks);
+        tasksService.save(tasks);
         return "redirect:/tasks";
     }
 
     @GetMapping("/taskDelete/{id}")
     public String taskDelete(@PathVariable("id") long id){
-        taskRepository.deleteById(id);
+        tasksService.delete(id);
         return "redirect:/tasks";
     }
 
     @GetMapping("/taskSkillUp/{id}")
     public String taskSkillUp(@AuthenticationPrincipal User user ,@PathVariable("id") long id, Model model){
-        Tasks tasks = taskRepository.findById(id).orElse(null);
+        Tasks tasks = tasksService.findOne(id);
         Difficulty difficulty = tasks.getDifficulty();
-        Integer difPoint = difficulty.getPoints();
-
-        switch (tasks.getSkill_name()) {
-            case "Сила": user.setStrength(user.getStrength() + difPoint);
-                break;
-            case "Интеллект": user.setIntelligence(user.getIntelligence() + difPoint);
-                break;
-            case "Здоровье": user.setHealth(user.getHealth() + difPoint);
-                break;
-            case "Креативность": user.setCreativity(user.getCreativity() + difPoint);
-                break;
-            case "Общение": user.setCommunication(user.getCommunication() + difPoint);
-                break;
-        }
-        userService.UserExpUp(user,difPoint);
-        userRepository.save(user);
-        taskRepository.deleteById(id);
+        userService.UserSkillUp(tasks.getSkill_name(),difficulty.getPoints(), user);
+        userService.UserExpUp(user,difficulty.getPoints());
+        userService.save(user);
+        tasksService.delete(id);
         return "redirect:/tasks";
     }
 }

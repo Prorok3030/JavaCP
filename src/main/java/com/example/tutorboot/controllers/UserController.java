@@ -2,7 +2,6 @@ package com.example.tutorboot.controllers;
 
 import com.example.tutorboot.models.Role;
 import com.example.tutorboot.models.User;
-import com.example.tutorboot.repo.UserRepository;
 import com.example.tutorboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,22 +21,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true) //для работы аннотации @PreAuthorize
 @Controller
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+    private final UserService userService;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/users")
     public String users(Model model){
-        List<User> users = userRepository.findAll();
+        List<User> users = userService.findAll();
         model.addAttribute("users", users);
         return "users";
     }
@@ -62,11 +60,11 @@ public class UserController {
         if (user.getId() == user1.getId()) {
             Authentication authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication); //назначение контексту обновленного пользователя
-            userRepository.save(user);
+            userService.save(user);
             return "redirect:/";
         }
         else {
-            userRepository.save(user);
+            userService.save(user);
             return "redirect:/users";
         }
     }
@@ -82,14 +80,14 @@ public class UserController {
         if (bindingResult.hasErrors()){
             return "profileEdit";
         }
-        User DbUser = userRepository.findByUsername(user.getUsername()); //TODO убрать, если не нужна уникальность имени пользователя
+        User DbUser = userService.findByUsername(user.getUsername());
         if (DbUser != null) {
             model.addAttribute("message", "Пользователь уже существует");
             return "profileEdit";
         }
         Authentication  authentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication); //назначение контексту обновленного пользователя
-        userRepository.save(user);
+        userService.save(user);
         return "redirect:/profile";
     }
 
@@ -97,22 +95,22 @@ public class UserController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/userDelete/{id}")
     public String userDelete(@PathVariable("id") long id, @AuthenticationPrincipal User user){
-        User deletableUser = userRepository.findById(id).orElse(null);
+        User deletableUser = userService.findOne(id);
         if (user.getId() == deletableUser.getId()){
-            userRepository.deleteById(id);
+            userService.delete(id);
             return "redirect:/logout";
         }
         else {
-            userRepository.deleteById(id);
+            userService.delete(id);
             return "redirect:/users";
         }
     }
 
     @GetMapping("/userDel/{id}")
     public String userDel(@PathVariable("id") long id, @AuthenticationPrincipal User user){
-        User deletableUser = userRepository.findById(id).orElse(null);
+        User deletableUser = userService.findOne(id);
         if (user.getId() == deletableUser.getId()){
-            userRepository.deleteById(id);
+            userService.delete(id);
             return "redirect:/logout";
         }
         else {

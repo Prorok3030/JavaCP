@@ -12,8 +12,8 @@ public class Tasks {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @NotEmpty(message = "Name should not be empty")
-    @Size(min = 2, max = 100, message = "Name should be between 2 and 100 characters")
+    @NotEmpty(message = "Название не может быть пустым")
+    @Size(min = 2, max = 100, message = "Длина названия должна быть от 2 до 100 символов")
     private String name;
     private String skill_name;
     @ManyToOne(fetch = FetchType.EAGER)
@@ -27,6 +27,7 @@ public class Tasks {
     private User user;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
@@ -39,11 +40,11 @@ public class Tasks {
     }
 
 
-    public Long getUserId() { //TODO Spring Boot magic
+    public Long getUserId() {
              return user.getId();
     }
 
-    public String getDifficultyName() { //TODO Spring Boot magic
+    public String getDifficultyName() {
         return difficulty.getName();
     }
 

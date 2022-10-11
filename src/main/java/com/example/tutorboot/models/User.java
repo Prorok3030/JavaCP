@@ -1,12 +1,9 @@
 package com.example.tutorboot.models;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.Collection;
@@ -19,11 +16,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @NotEmpty(message = "Name should not be empty")
-    @Size(min = 2, max = 50, message = "Name should be between 2 and 50 characters")
+    @NotEmpty(message = "Имя не может быть пустым")
+    @Size(min = 2, max = 50, message = "Длина имени должна быть от 2 до 50 символов")
     private String username;
-    @NotEmpty(message = "Password should not be empty")
-    @Size(min = 8, max = 100, message = "Password should be between 8 and 100 characters")
+    @NotEmpty(message = "Пароль не может быть пустым")
+    @Size(min = 8, max = 100, message = "Длина пароля должна быть от 8 до 100 символов")
     private String password;
     private boolean active;
     private Integer strength = 0;

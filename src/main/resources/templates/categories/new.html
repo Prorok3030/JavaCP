@@ -7,6 +7,7 @@
   <title>Добавление категории</title>
 </head>
 <body>
+<header th:insert="blocks/header :: header"></header>
 <h1>Добавление категории</h1>
 <form th:method="POST" th:action="@{/categories}" th:object="${category}">
   <label for="name">Название</label>

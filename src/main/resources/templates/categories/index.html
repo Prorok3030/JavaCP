@@ -15,13 +15,11 @@
     <table class="table">
         <thead class="thead-light">
         <tr>
-            <th scope="col">ID</th>
             <th scope="col">Название</th>
         </tr>
         </thead>
         <tbody th:each="category : ${categories}">
         <tr>
-            <td th:text="${category.id}"/>
             <td th:text="${category.name}"/>
             <td><a class="btn btn-primary" th:href="@{/categories/{id}/edit(id=${category.getId()})}">Редактировать</a></td>
             <td><form th:method="DELETE" th:action="@{/categories/{id}(id=${category.getId()})}">

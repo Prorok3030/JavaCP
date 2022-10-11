@@ -1,11 +1,7 @@
 package com.example.tutorboot.models;
 
-import com.sun.istack.NotNull;
-import org.springframework.beans.factory.annotation.Value;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -13,7 +9,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @NotEmpty(message = "Name should not be empty")
+    @NotEmpty(message = "Название не может быть пустым")
     private String name;
     @OneToMany(mappedBy = "category")
     private List<Tasks> tasks;
@@ -23,7 +19,7 @@ public class Category {
     private User user;
 
     public Category(){
-        this.name = "not category";
+
     }
 
     public Category(String name, User user) {

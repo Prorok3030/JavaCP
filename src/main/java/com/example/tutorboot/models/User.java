@@ -31,8 +31,8 @@ public class User implements UserDetails {
     private Integer level = 1;
     private Integer experience = 0;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-    private List<Category> category;
+//    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+//    private List<Category> category;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
@@ -127,13 +127,13 @@ public class User implements UserDetails {
         this.experience = experience;
     }
 
-    public List<Category> getCategory() {
-        return category;
-    }
+//    public List<Category> getCategory() {
+//        return category;
+//    }
 
-    public void setCategory(List<Category> category) {
-        this.category = category;
-    }
+//    public void setCategory(List<Category> category) {
+//        this.category = category;
+//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

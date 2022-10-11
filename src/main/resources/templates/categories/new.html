@@ -12,7 +12,7 @@
 <form th:method="POST" th:action="@{/categories}" th:object="${category}">
   <label for="name">Название</label>
   <input type="text" th:field="*{name}" id="name"/>
-  <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>
+  <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Error</div>
   <br/>
   <input type="submit" value="Добавить"/>
   <a class="btn btn-primary" href="/categories" role="button">Отмена</a>

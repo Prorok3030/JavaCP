@@ -14,9 +14,9 @@
         <td><input type="text" th:field="*{name}" placeholder="Input name" class="form-control"> </td>
         <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name error</div><br>
         <td>Навык</td>
-        <select th:field="*{skill_name}">
-            <option th:each="skill_name : ${skills}" th:value="${skill_name}"
-                    th:text="${skill_name}"></option>
+        <select th:field="*{skill}">
+            <option th:each="skills : ${skills}" th:value="${skills.id}"
+                    th:text="${skills.name}"></option>
         </select><br>
         <td>Сложность</td>
         <select th:field="*{difficulty}">

@@ -15,7 +15,10 @@ public class Tasks {
     @NotEmpty(message = "Название не может быть пустым")
     @Size(min = 2, max = 100, message = "Длина названия должна быть от 2 до 100 символов")
     private String name;
-    private String skill_name;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "skill_id")
+    private Skill skill;
     @ManyToOne(fetch = FetchType.EAGER)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "difficulty_id")
@@ -31,9 +34,9 @@ public class Tasks {
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
-    public Tasks(String name, String skill, Difficulty diff, Category cat, User user) {
+    public Tasks(String name, Skill skill, Difficulty diff, Category cat, User user) {
         this.name = name;
-        this.skill_name = skill;
+        this.skill = skill;
         this.difficulty = diff;
         this.category = cat;
         this.user = user;
@@ -48,13 +51,17 @@ public class Tasks {
         return difficulty.getName();
     }
 
+    public String getSkillName() {
+        return skill.getName();
+    }
+
     public Tasks() {
     }
 
 
-    public Tasks(String name, String skill_name, Difficulty difficulty, User user, Category category) {
+    public Tasks(String name, Skill skill, Difficulty difficulty, User user, Category category) {
         this.name = name;
-        this.skill_name = skill_name;
+        this.skill = skill;
         this.difficulty = difficulty;
         this.user = user;
         this.category = category;
@@ -76,12 +83,12 @@ public class Tasks {
         this.name = name;
     }
 
-    public String getSkill_name() {
-        return skill_name;
+    public Skill getSkill() {
+        return skill;
     }
 
-    public void setSkill_name(String skill_name) {
-        this.skill_name = skill_name;
+    public void setSkill(Skill skill) {
+        this.skill = skill;
     }
 
     public Difficulty getDifficulty() {

@@ -1,13 +1,7 @@
 package com.example.tutorboot.controllers;
 
-import com.example.tutorboot.models.Category;
-import com.example.tutorboot.models.Difficulty;
-import com.example.tutorboot.models.Tasks;
-import com.example.tutorboot.models.User;
-import com.example.tutorboot.service.CategoriesService;
-import com.example.tutorboot.service.DifficultyService;
-import com.example.tutorboot.service.TasksService;
-import com.example.tutorboot.service.UserService;
+import com.example.tutorboot.models.*;
+import com.example.tutorboot.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,11 +24,13 @@ import java.util.stream.IntStream;
 public class TaskController {
 
     @Autowired
-    public TaskController(TasksService tasksService, UserService userService,CategoriesService categoriesService, DifficultyService difficultyService) {
+    public TaskController(TasksService tasksService, UserService userService, CategoriesService categoriesService,
+                          DifficultyService difficultyService, SkillService skillService) {
         this.tasksService = tasksService;
         this.userService = userService;
         this.categoriesService = categoriesService;
         this.difficultyService = difficultyService;
+        this.skillService = skillService;
     }
 
     private final DifficultyService difficultyService;
@@ -44,6 +40,8 @@ public class TaskController {
     private final TasksService tasksService;
 
     private final CategoriesService categoriesService;
+
+    private final SkillService skillService;
 
     @GetMapping("/tasks")
     public String home(@AuthenticationPrincipal User user, Model model,
@@ -73,9 +71,8 @@ public class TaskController {
 
     @GetMapping("/taskAdd")
     public String taskAdd(@AuthenticationPrincipal User user, Tasks tasks, Model model){
-        Iterable<Difficulty> difficulty = difficultyService.findAll();
-        model.addAttribute("difficulties", difficulty);
-        model.addAttribute("skills", tasksService.getSkills());
+        model.addAttribute("difficulties",difficultyService.findAll());
+        model.addAttribute("skills",skillService.findAll());
         model.addAttribute("categories", categoriesService.findByUser(user));
         return "taskAdd";
     }
@@ -89,7 +86,7 @@ public class TaskController {
         if(bindingResult.hasErrors()){
             Iterable<Difficulty> difficulty = difficultyService.findAll();
             model.addAttribute("difficulties", difficulty);
-            model.addAttribute("skills", tasksService.getSkills());
+            model.addAttribute("skills",skillService.findAll());
             model.addAttribute("categories", categoriesService.findAll());
             return "taskAdd";
         }
@@ -107,7 +104,7 @@ public class TaskController {
         model.addAttribute("difficulties", difficulty);
         model.addAttribute("categories", categoriesService.findAll());
         model.addAttribute("category", category1.getId());
-        model.addAttribute("skills", tasksService.getSkills());
+        model.addAttribute("skills", skillService.findAll());
         return "taskEdit";
     }
 
@@ -120,7 +117,7 @@ public class TaskController {
             model.addAttribute("difficulties", difficultyService.findAll());
             model.addAttribute("categories", categoriesService.findAll());
             model.addAttribute("category", category1.getId());
-            model.addAttribute("skills", tasksService.getSkills());
+            model.addAttribute("skills", skillService.findAll());
             return "taskEdit";
         }
 
@@ -138,7 +135,8 @@ public class TaskController {
     public String taskSkillUp(@AuthenticationPrincipal User user ,@PathVariable("id") long id, Model model){
         Tasks tasks = tasksService.findOne(id);
         Difficulty difficulty = tasks.getDifficulty();
-        userService.UserSkillUp(tasks.getSkill_name(),difficulty.getPoints(), user);
+        Skill skill = tasks.getSkill();
+        userService.UserSkillUp(skill.getName(),difficulty.getPoints(), user);
         userService.UserExpUp(user,difficulty.getPoints());
         userService.save(user);
         tasksService.delete(id);

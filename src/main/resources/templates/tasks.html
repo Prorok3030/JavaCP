@@ -21,16 +21,14 @@
             <th scope="col">Категория</th>
             <th scope="col">Навык</th>
             <th scope="col">Сложность</th>
-<!--            <th scope="col">User_id</th>-->
         </tr>
         </thead>
         <tbody th:each="el : ${tasksPage.content}">
         <tr>
             <td th:text="${el.name}"/>
             <td th:text="${el.category.name}"/>
-            <td th:text="${el.skill_name}"/>
+            <td th:text="${el.SkillName}"/>
             <td th:text="${el.DifficultyName}"/>
-<!--            <td th:text="${el.UserId}"/>-->
             <td><a class="btn btn-primary" th:href="@{taskSkillUp/{id}(id=${el.id})}" role="button">Выполнить</a></td>
             <td><a class="btn btn-primary" th:href="@{taskEdit/{id}(id=${el.id})}" role="button">Редактировать</a></td>
             <td><a class="btn btn-danger" th:href="@{taskDelete/{id}(id=${el.id})}" role="button">Удалить</a></td>

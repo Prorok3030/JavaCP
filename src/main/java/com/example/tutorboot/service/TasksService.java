@@ -17,19 +17,19 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class TasksService {
 
-    private static List<String> skills;
-    static {
-        skills = new ArrayList<>();
-        skills.add("Сила");
-        skills.add("Интеллект");
-        skills.add("Здоровье");
-        skills.add("Креативность");
-        skills.add("Общение");
-    }
+//    private static List<String> skills;
+//    static {
+//        skills = new ArrayList<>();
+//        skills.add("Сила");
+//        skills.add("Интеллект");
+//        skills.add("Здоровье");
+//        skills.add("Креативность");
+//        skills.add("Общение");
+//    }
 
-    public static List<String> getSkills() {
-        return skills;
-    }
+//    public static List<String> getSkills() {
+//        return skills;
+//    }
 
     @Autowired
     public TasksService(TaskRepository taskRepository) {

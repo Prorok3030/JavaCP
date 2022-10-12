@@ -6,8 +6,10 @@ import com.example.tutorboot.service.CategoriesService;
 import com.example.tutorboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
@@ -28,18 +30,18 @@ public class RegistrationController {
     private final CategoriesService categoriesService;
 
     @GetMapping("/registration")
-    public String registration(User user){
+    public String registration(@ModelAttribute("user") User user){
         return "registration";
     }
 
     @PostMapping("/registration")
-    public String registrationPost(@Valid User user, BindingResult bindingResult, Map<String, Object> model){
+    public String registrationPost(@Valid User user, BindingResult bindingResult, Model model){
         if(bindingResult.hasErrors()){
             return "registration";
         }
         User DbUser = userService.findByUsername(user.getUsername());
         if (DbUser != null) {
-            model.put("message", "Пользователь уже существует");
+            model.addAttribute("message", "Пользователь уже существует");
             return "registration";
         }
 

@@ -31,12 +31,6 @@ public class CategoriesController {
         return "categories/index";
     }
 
-    @GetMapping("/{id}")
-    public String show(@PathVariable("id") Long id, Model model){
-        model.addAttribute("category", categoriesService.findOne(id));
-        return "categories/show";
-    }
-
     @GetMapping("/new")
     public String newCategories(@ModelAttribute("category") Category category){
         return "categories/new";
